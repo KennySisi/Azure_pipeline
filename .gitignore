@@ -1,0 +1,71 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual Environments
+venv/
+env/
+bin/
+include/
+lib/
+lib64/
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+
+# IDE-specific
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Testing
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+htmlcov/
+
+# Environments
+.env
+.env.local
+.env.*.local
+
+# Django
+*.log
+*.pot
+*.pyc
+__pycache__/
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+
+# Flask
+instance/
+.webassets-cache
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# IPython
+profile_default/
+ipython_config.py
+
+# PyInstaller
+dist/
+build/
+*.exe
+*.spec
+
+# PyBuilder
+target/
+
+# pipenv
+Pipfile.lock
+Pipfile
+
+# Poetry
+poetry.lock
