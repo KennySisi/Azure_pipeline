@@ -40,12 +40,11 @@ jobs:
       # Runs a single command using the runners shell
       - name: build the docker image
         run: |
-          docker build -t fastapi3 . 
+          docker build -t fastapi_${GITHUB_RUN_NUMBER} . 
 
       # Runs a set of commands using the runners shell
       - name: show the image list
         run: |
-          echo Add other actions to build,
           docker image list
 
       - name: push the docker image to docker hub
