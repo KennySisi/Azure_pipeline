@@ -2,9 +2,10 @@ from setuptools import setup, find_packages
 
 setup(
     name='azure_pipeline',
-    version='0.1',
+    version='1',
     packages=find_packages(),
     package_data={
+        '': ['requirements.txt'],
         'azure_pipeline': ['main.py'],  # 包含在根目录下的 main.py 文件
     },
     install_requires=[
