@@ -41,6 +41,7 @@ jobs:
       - name: build the docker image
         run: |
           docker build -t fastapi4 . 
+          echo GITHUB_RUN_NUMBER = ${GITHUB_RUN_NUMBER}
 
       # Runs a set of commands using the runners shell
       - name: show the image list
