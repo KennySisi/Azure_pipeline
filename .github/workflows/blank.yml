@@ -43,11 +43,22 @@ jobs:
           docker build -t fastapi${{ github.run_number }} . 
 
       # Runs a set of commands using the runners shell
-      - name: show the image list and run the image in the background
+      - name: show the image list before
         run: |
           docker image list
-          docker run -p 8080:80 -d fastapi${{ github.run_number }}
 
       - name: push the docker image to docker hub
         run: |
           echo push dokcer image to docker hub
+          docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
+          docker tag fastapi${{ github.run_number }} mly219blueheart/fastapi${{ github.run_number }}:latest
+          docker push mly219blueheart/fastapi${{ github.run_number }}:latest
+
+      - name: show the image list after
+        run: |
+          docker image list
+
+      - name: run the image in the background
+        run: |
+          docker run -p 8000:8000 -d fastapi${{ github.run_number }}
+
