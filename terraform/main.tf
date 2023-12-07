@@ -1,6 +1,16 @@
 # Copyright (c) HashiCorp, Inc.
 # SPDX-License-Identifier: MPL-2.0
 
+terraform {
+  backend "azurerm" {
+    resource_group_name   = "myTFResourceGroup"
+    storage_account_name   = "tfstorageaccountkenny"
+    container_name         = "tfstate"
+    key                    = "terraform.tfstate"
+    access_key             = "pDQILEz68lhfmVCrk3mL8k0YrBsPEE+nL7vWHkiz6UGRsaaCkyGEex/5hINHTNKWMVCg2mljNKWT+AStTAUJdA=="
+  }
+}
+
 provider "azurerm" {
   features {}
 }
