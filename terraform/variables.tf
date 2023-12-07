@@ -20,3 +20,8 @@ variable "password" {
   description = "password."
   default = "Zs850605:)"
 }
+
+variable "github_run_number" {
+  description = "git hub run number"
+  default = 16
+}

@@ -24,6 +24,13 @@ resource "azurerm_subnet" "internal" {
   address_prefixes     = ["10.0.2.0/24"]
 }
 
+resource "azurerm_public_ip" "main" {
+  name                = "${var.prefix}-public-ip"
+  resource_group_name = azurerm_resource_group.main.name
+  location            = azurerm_resource_group.main.location
+  allocation_method   = "Dynamic"
+}
+
 resource "azurerm_network_interface" "main" {
   name                = "${var.prefix}-nic"
   resource_group_name = azurerm_resource_group.main.name
@@ -33,6 +40,7 @@ resource "azurerm_network_interface" "main" {
     name                          = "internal"
     subnet_id                     = azurerm_subnet.internal.id
     private_ip_address_allocation = "Dynamic"
+    public_ip_address_id = azurerm_public_ip.main.id
   }
 }
 
@@ -59,4 +67,32 @@ resource "azurerm_linux_virtual_machine" "main" {
     storage_account_type = "Standard_LRS"
     caching              = "ReadWrite"
   }
+
+    provisioner "remote-exec" {
+    inline = [
+      "echo 'Script execution start'",
+      "sudo apt-get update",
+      "sudo apt-get install -y python3",  # 安装 Python
+      "sudo apt-get install -y python3-pip",  # 安装 pip
+      "pip3 install fastapi uvicorn",  # 安装 FastAPI 和 Uvicorn
+      "sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common",
+      "curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg",
+      "echo \"deb [signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable\" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null",
+      "sudo apt-get install -y docker-ce docker-ce-cli containerd.io",
+      "sudo docker --version",
+      "docker run -p 8000:8000 -d mly219blueheart/fastapi${var.github_run_number}:latest",
+      "echo 'Script execution end'",
+    ]
+
+    connection {
+      type        = "ssh"
+      user        = var.username
+      password = "Zs850605:)"
+      host        = azurerm_public_ip.main.ip_address
+    }
+
+  }
+
+  # custom_data = file("cloud-init-script.sh")
+
 }
