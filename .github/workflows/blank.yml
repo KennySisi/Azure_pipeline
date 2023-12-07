@@ -63,7 +63,7 @@ jobs:
       #     docker run -p 8000:8000 -d fastapi${{ github.run_number }}
 
       - name: run the terraform to create the server VM to run docker image
-        run:
+        run: |
           cd terraform
           terraform init
           terraform plan
