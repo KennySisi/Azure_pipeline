@@ -90,7 +90,7 @@ resource "azurerm_linux_virtual_machine" "main" {
       "echo \"deb [signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable\" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null",
       "sudo apt-get install -y docker-ce docker-ce-cli containerd.io",
       "sudo docker --version",
-      "docker run -p 8000:8000 -d mly219blueheart/fastapi${var.github_run_number}:latest",
+      "docker run -p 8000:8000 -d mly219blueheart/fastapi:latest",
       "echo 'Script execution end'",
     ]
 

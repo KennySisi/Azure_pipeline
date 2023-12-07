@@ -40,7 +40,7 @@ jobs:
       # Runs a single command using the runners shell
       - name: build the docker image
         run: |
-          docker build -t fastapi${{ github.run_number }} . 
+          docker build -t fastapi . 
 
       # Runs a set of commands using the runners shell
       - name: show the image list before
@@ -51,8 +51,10 @@ jobs:
         run: |
           echo push dokcer image to docker hub
           docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
-          docker tag fastapi${{ github.run_number }} mly219blueheart/fastapi${{ github.run_number }}:latest
-          docker push mly219blueheart/fastapi${{ github.run_number }}:latest
+          docker tag fastapi mly219blueheart/fastapi:latest
+          docker tag fastapi mly219blueheart/fastapi:${{ github.run_number }}
+          docker push mly219blueheart/fastapi:latest
+          docker push mly219blueheart/fastapi:${{ github.run_number }}
 
       - name: show the image list after
         run: |
