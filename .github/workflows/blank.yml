@@ -58,6 +58,7 @@ jobs:
 
       - name: show the image list after
         run: |
+          docker image prune -f
           docker image list
 
       # - name: run the image in the background
@@ -69,5 +70,5 @@ jobs:
           cd terraform
           terraform init
           terraform plan
-          terraform apply
+          terraform apply -auto-approve
 
