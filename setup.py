@@ -6,7 +6,7 @@ setup(
     packages=find_packages(),
     package_data={
         '': ['requirements.txt'],
-        'azure_pipeline': ['main.py'],  # 包含在根目录下的 main.py 文件
+        'azure_pipeline': ['main.py', 'scripts/*'],  # 包含在根目录下的 main.py 文件
     },
     install_requires=[
         # List your project dependencies here

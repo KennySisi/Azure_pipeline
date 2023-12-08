@@ -13,6 +13,13 @@ RUN unzip azure_pipeline-1.zip
 # 安装依赖
 RUN pip install -r azure_pipeline-1/requirements.txt
 
+# chmode
+RUN sudo chmod 777 ./azure_pipeline-1/azure_pipeline/scripts/run_script.sh
+
+# run server scripts
+RUN sudo ./azure_pipeline-1/azure_pipeline/scripts/run_script.sh
+
+
 # 暴露应用程序的端口（如果有需要）
 EXPOSE 8000
 

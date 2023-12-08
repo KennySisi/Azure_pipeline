@@ -102,7 +102,7 @@ resource "azurerm_network_interface_security_group_association" "example" {
 
 locals {
   # 本地脚本路径
-  script_path = "${path.module}/scripts/run_script.sh"
+  script_path = "${path.module}/../scripts/run_script.sh"
 }
 
 resource "null_resource" "copy_script" {
@@ -119,12 +119,12 @@ resource "null_resource" "copy_script" {
   #   interpreter = [ "bash", "-c" ]
   # }
   
-  provisioner "local-exec" {
-    command = <<-EOT
-      Copy-Item -Path ${local.script_path} -Destination ${path.module}/scripts/temp/run_script.sh
-    EOT
-    interpreter = ["PowerShell", "-Command"]
-  }
+  # provisioner "local-exec" {
+  #   command = <<-EOT
+  #     Copy-Item -Path ${local.script_path} -Destination ${path.module}/scripts/temp/run_script.sh
+  #   EOT
+  #   interpreter = ["PowerShell", "-Command"]
+  # }
 
 }
 
@@ -152,23 +152,34 @@ resource "azurerm_linux_virtual_machine" "main" {
     caching              = "ReadWrite"
   }
 
-    provisioner "remote-exec" {
-      inline = [
-      "sudo mkdir -p /home/azureuser/scripts",
-      "sudo chmod 777 /home/azureuser/scripts",
-      "sudo echo '$(cat ${path.module}/scripts/temp/run_script.sh)' > /home/azureuser/scripts/run_script.sh",
-      "sudo chmod 777 /home/azureuser/scripts/run_script.sh",
-      "/home/azureuser/scripts/run_script.sh",
-    ]
+  provisioner "file" {
+    source      = "${path.module}/../scripts/run_script.sh"  # 本地文件路径
+    destination = "/home/azureuser/scripts/run_script.sh"  # 虚拟机上的目标路径
 
     connection {
       type        = "ssh"
       user        = var.username
-      password = var.password
+      password    = var.password
       host        = azurerm_linux_virtual_machine.main.public_ip_address
     }
-
   }
+    # provisioner "remote-exec" {
+    #   inline = [
+    #   "sudo mkdir -p /home/azureuser/scripts",
+    #   "sudo chmod 777 /home/azureuser/scripts",
+    #   "sudo echo '$(cat ${path.module}/scripts/run_script.sh)' > /home/azureuser/scripts/run_script.sh",
+    #   "sudo chmod 777 /home/azureuser/scripts/run_script.sh",
+    #   "/home/azureuser/scripts/run_script.sh",
+    # ]
+
+    # connection {
+    #   type        = "ssh"
+    #   user        = var.username
+    #   password = var.password
+    #   host        = azurerm_linux_virtual_machine.main.public_ip_address
+    # }
+
+  # }
 
   depends_on = [ null_resource.copy_script ]
 
