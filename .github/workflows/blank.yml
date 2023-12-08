@@ -25,10 +25,10 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
 
-      - name: Install Dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
+      # - name: Install Dependencies
+      #   run: |
+      #     python -m pip install --upgrade pip
+      #     pip install -r requirements.txt
 
       - name: code style check
         run: flake8 .\azure_pipeline\ 
@@ -37,29 +37,29 @@ jobs:
         run: |
           python setup.py sdist --formats=zip
 
-      # Runs a single command using the runners shell
-      - name: build the docker image
-        run: |
-          docker build -t fastapi . 
+      # # Runs a single command using the runners shell
+      # - name: build the docker image
+      #   run: |
+      #     docker build -t fastapi . 
 
-      # Runs a set of commands using the runners shell
-      - name: show the image list before
-        run: |
-          docker image list
+      # # Runs a set of commands using the runners shell
+      # - name: show the image list before
+      #   run: |
+      #     docker image list
 
-      - name: push the docker image to docker hub
-        run: |
-          echo push dokcer image to docker hub
-          docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
-          docker tag fastapi mly219blueheart/fastapi:latest
-          docker tag fastapi mly219blueheart/fastapi:${{ github.run_number }}
-          docker push mly219blueheart/fastapi:latest
-          docker push mly219blueheart/fastapi:${{ github.run_number }}
+      # - name: push the docker image to docker hub
+      #   run: |
+      #     echo push dokcer image to docker hub
+      #     docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
+      #     docker tag fastapi mly219blueheart/fastapi:latest
+      #     docker tag fastapi mly219blueheart/fastapi:${{ github.run_number }}
+      #     docker push mly219blueheart/fastapi:latest
+      #     docker push mly219blueheart/fastapi:${{ github.run_number }}
 
-      - name: show the image list after
-        run: |
-          docker image prune -f
-          docker image list
+      # - name: show the image list after
+      #   run: |
+      #     docker image prune -f
+      #     docker image list
 
       # - name: run the image in the background
       #   run: |
@@ -68,7 +68,11 @@ jobs:
       - name: run the terraform to create the server VM to run docker image
         run: |
           cd terraform
+          echo "kenny debug"
+          echo %cd%
           terraform init
           terraform plan
           terraform apply -auto-approve
+          echo "kenny debug"
+          echo %cd%
 
