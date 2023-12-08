@@ -66,6 +66,7 @@ resource "azurerm_network_interface" "main" {
   name                = "${var.prefix}-nic"
   resource_group_name = azurerm_resource_group.main.name
   location            = azurerm_resource_group.main.location
+  # network_security_group_id = azurerm_network_security_group.main.id
 
   ip_configuration {
     name                          = "internal"
@@ -75,13 +76,18 @@ resource "azurerm_network_interface" "main" {
     # network_security_group_ids = [azurerm_network_security_group.main.id]
   }
 
-  //snetwork_security_group_id = azurerm_network_security_group.main.id
 }
 
-resource "azurerm_network_interface_application_security_group_association" "main" {
-  network_interface_id          = azurerm_network_interface.main.id
-  application_security_group_id = azurerm_network_security_group.main.id
+# resource "azurerm_network_interface_application_security_group_association" "main" {
+#   network_interface_id          = azurerm_network_interface.main.id
+#   application_security_group_id = azurerm_network_security_group.main.id
+# }
+
+resource "azurerm_network_interface_security_group_association" "example" {
+  network_interface_id      = azurerm_network_interface.main.id
+  network_security_group_id = azurerm_network_security_group.main.id
 }
+
 
 resource "azurerm_linux_virtual_machine" "main" {
   name                            = "${var.prefix}-vm"
