@@ -59,6 +59,18 @@ resource "azurerm_network_security_group" "main" {
     source_address_prefix      = "*"
     destination_address_prefix = "*"
   }
+
+    security_rule {
+    name                       = "HTTPRule"
+    priority                   = 1002
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "8000"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
+  }
 }
 
 
@@ -88,6 +100,33 @@ resource "azurerm_network_interface_security_group_association" "example" {
   network_security_group_id = azurerm_network_security_group.main.id
 }
 
+locals {
+  # 本地脚本路径
+  script_path = "${path.module}/scripts/run_script.sh"
+}
+
+resource "null_resource" "copy_script" {
+  # 本地执行器只有在 apply 时运行一次
+  triggers = {
+    always_run = timestamp()
+  }
+
+  # 将脚本文件复制到临时目录
+  # provisioner "local-exec" {
+  #   command = <<-EOT
+  #     cp ${local.script_path} ${path.module}/temp/run_script.sh
+  #   EOT
+  #   interpreter = [ "bash", "-c" ]
+  # }
+  
+  provisioner "local-exec" {
+    command = <<-EOT
+      Copy-Item -Path ${local.script_path} -Destination ${path.module}/scripts/temp/run_script.sh
+    EOT
+    interpreter = ["PowerShell", "-Command"]
+  }
+
+}
 
 resource "azurerm_linux_virtual_machine" "main" {
   name                            = "${var.prefix}-vm"
@@ -114,19 +153,12 @@ resource "azurerm_linux_virtual_machine" "main" {
   }
 
     provisioner "remote-exec" {
-    inline = [
-      "echo 'Script execution start'",
-      "sudo apt-get update",
-      "sudo apt-get install -y python3",  # 安装 Python
-      "sudo apt-get install -y python3-pip",  # 安装 pip
-      "pip3 install fastapi uvicorn",  # 安装 FastAPI 和 Uvicorn
-      "sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common",
-      "curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg",
-      "echo \"deb [signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable\" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null",
-      "sudo apt-get install -y docker-ce docker-ce-cli containerd.io",
-      "sudo docker --version",
-      "docker run -p 8000:8000 -d mly219blueheart/fastapi:latest",
-      "echo 'Script execution end'",
+      inline = [
+      "sudo mkdir -p /home/azureuser/scripts",
+      "sudo chmod 777 /home/azureuser/scripts",
+      "sudo echo '$(cat ${path.module}/scripts/temp/run_script.sh)' > /home/azureuser/scripts/run_script.sh",
+      "sudo chmod 777 /home/azureuser/scripts/run_script.sh",
+      "/home/azureuser/scripts/run_script.sh",
     ]
 
     connection {
@@ -137,6 +169,8 @@ resource "azurerm_linux_virtual_machine" "main" {
     }
 
   }
+
+  depends_on = [ null_resource.copy_script ]
 
   # custom_data = file("cloud-init-script.sh")
 
