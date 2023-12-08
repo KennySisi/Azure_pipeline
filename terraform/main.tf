@@ -152,6 +152,18 @@ resource "azurerm_linux_virtual_machine" "main" {
     caching              = "ReadWrite"
   }
 
+  provisioner "local-exec" {
+    command = "echo start debug"
+  }
+
+  provisioner "local-exec" {
+    command = "echo ${path.module}"
+  }  
+  
+  provisioner "local-exec" {
+    command = "echo %cd%"
+  }
+
   provisioner "file" {
     source      = "${path.module}/../scripts/run_script.sh"  # 本地文件路径
     destination = "/home/azureuser/scripts/run_script.sh"  # 虚拟机上的目标路径
