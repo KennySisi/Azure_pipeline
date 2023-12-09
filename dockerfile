@@ -10,8 +10,10 @@ COPY dist/azure_pipeline-1.zip .
 # 解压你的安装包
 RUN unzip azure_pipeline-1.zip
 
-# 安装依赖
-RUN pip install -r azure_pipeline-1/requirements.txt
+# set a virtualenv to run pip install
+RUN virtualenv venv1 \
+    .\venv1\scripts\activate \
+    pip install -r azure_pipeline-1/requirements.txt
 
 # # chmode
 # RUN sudo chmod 777 ./azure_pipeline-1/azure_pipeline/scripts/run_script.sh
