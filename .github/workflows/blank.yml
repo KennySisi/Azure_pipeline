@@ -70,9 +70,14 @@ jobs:
           cd terraform
           echo "kenny debug"
           echo %cd%
+          terraform refresh
+          sleep 20
           terraform init
+          sleep 20
           terraform plan
+          sleep 20
           terraform apply -auto-approve
+          sleep 20
           echo "kenny debug"
           echo %cd%
 

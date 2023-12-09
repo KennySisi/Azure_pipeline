@@ -105,28 +105,28 @@ locals {
   script_path = "${path.module}/../scripts/run_script.sh"
 }
 
-resource "null_resource" "copy_script" {
-  # 本地执行器只有在 apply 时运行一次
-  triggers = {
-    always_run = timestamp()
-  }
+# resource "null_resource" "copy_script" {
+#   # 本地执行器只有在 apply 时运行一次
+#   triggers = {
+#     always_run = timestamp()
+#   }
 
-  # 将脚本文件复制到临时目录
-  # provisioner "local-exec" {
-  #   command = <<-EOT
-  #     cp ${local.script_path} ${path.module}/temp/run_script.sh
-  #   EOT
-  #   interpreter = [ "bash", "-c" ]
-  # }
+#   # 将脚本文件复制到临时目录
+#   # provisioner "local-exec" {
+#   #   command = <<-EOT
+#   #     cp ${local.script_path} ${path.module}/temp/run_script.sh
+#   #   EOT
+#   #   interpreter = [ "bash", "-c" ]
+#   # }
   
-  # provisioner "local-exec" {
-  #   command = <<-EOT
-  #     Copy-Item -Path ${local.script_path} -Destination ${path.module}/scripts/temp/run_script.sh
-  #   EOT
-  #   interpreter = ["PowerShell", "-Command"]
-  # }
+#   # provisioner "local-exec" {
+#   #   command = <<-EOT
+#   #     Copy-Item -Path ${local.script_path} -Destination ${path.module}/scripts/temp/run_script.sh
+#   #   EOT
+#   #   interpreter = ["PowerShell", "-Command"]
+#   # }
 
-}
+# }
 
 resource "azurerm_linux_virtual_machine" "main" {
   name                            = "${var.prefix}-vm"
@@ -164,9 +164,47 @@ resource "azurerm_linux_virtual_machine" "main" {
     command = "echo %cd%"
   }
 
+  # provisioner "file" {
+  #   source      = "F:/Learning/Code/fast_api/azure_pipeline/scripts/run_script.sh"  # 本地文件路径
+  #   destination = "/home/azureuser/run_script.sh"  # 虚拟机上的目标路径
+
+  #   connection {
+  #     type        = "ssh"
+  #     user        = var.username
+  #     password    = var.password
+  #     host        = azurerm_linux_virtual_machine.main.public_ip_address
+  #   }
+  # }
+
+  #   provisioner "remote-exec" {
+  #     inline = [
+  #     "tr -d '\r' < /home/azureuser/run_script.sh > /home/azureuser/run_script_unix.sh",
+  #     "sudo chmod 777 /home/azureuser/run_script_unix.sh",
+  #     "sudo /home/azureuser/run_script_unix.sh",
+  #   ]
+
+  #   connection {
+  #     type        = "ssh"
+  #     user        = var.username
+  #     password = var.password
+  #     host        = azurerm_linux_virtual_machine.main.public_ip_address
+  #   }
+
+  # }
+
+
+  # custom_data = file("cloud-init-script.sh")
+}
+
+resource "null_resource" "copy_and_execute_script" {
+  # 在 apply 时运行一次
+  triggers = {
+    always_run = timestamp()
+  }
+
   provisioner "file" {
-    source      = "${path.module}/../scripts/run_script.sh"  # 本地文件路径
-    destination = "/home/azureuser/scripts/run_script.sh"  # 虚拟机上的目标路径
+    source      = "F:/Learning/Code/fast_api/azure_pipeline/scripts/run_script.sh"  # 本地文件路径
+    destination = "/home/azureuser/run_script.sh"  # 虚拟机上的目标路径
 
     connection {
       type        = "ssh"
@@ -175,26 +213,19 @@ resource "azurerm_linux_virtual_machine" "main" {
       host        = azurerm_linux_virtual_machine.main.public_ip_address
     }
   }
-    # provisioner "remote-exec" {
-    #   inline = [
-    #   "sudo mkdir -p /home/azureuser/scripts",
-    #   "sudo chmod 777 /home/azureuser/scripts",
-    #   "sudo echo '$(cat ${path.module}/scripts/run_script.sh)' > /home/azureuser/scripts/run_script.sh",
-    #   "sudo chmod 777 /home/azureuser/scripts/run_script.sh",
-    #   "/home/azureuser/scripts/run_script.sh",
-    # ]
 
-    # connection {
-    #   type        = "ssh"
-    #   user        = var.username
-    #   password = var.password
-    #   host        = azurerm_linux_virtual_machine.main.public_ip_address
-    # }
+  provisioner "remote-exec" {
+    inline = [
+      "tr -d '\r' < /home/azureuser/run_script.sh > /home/azureuser/run_script_unix.sh",
+      "sudo chmod 777 /home/azureuser/run_script_unix.sh",
+      "sudo /home/azureuser/run_script_unix.sh",
+    ]
 
-  # }
-
-  depends_on = [ null_resource.copy_script ]
-
-  # custom_data = file("cloud-init-script.sh")
-
+    connection {
+      type        = "ssh"
+      user        = var.username
+      password    = var.password
+      host        = azurerm_linux_virtual_machine.main.public_ip_address
+    }
+  }
 }
