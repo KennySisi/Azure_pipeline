@@ -11,8 +11,9 @@ COPY dist/azure_pipeline-1.zip .
 RUN unzip azure_pipeline-1.zip
 
 # set a virtualenv to run pip install
-RUN virtualenv venv1 \
-    .\venv1\scripts\activate \
+RUN pip install virtualenv \
+    virtualenv venv1 \
+    ./venv1/scripts/activate \
     pip install -r azure_pipeline-1/requirements.txt
 
 # # chmode
