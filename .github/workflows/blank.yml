@@ -80,4 +80,7 @@ jobs:
           sleep 20
           echo "kenny debug"
           echo %cd%
+          terraform refresh
+          sleep 20
+          terraform output public_ip_address
 
