@@ -2,7 +2,6 @@
 
 FROM python:3.9
 
-# SHELL [ "bash", "-command" ]
 
 # 设置工作目录
 WORKDIR /app
@@ -13,13 +12,16 @@ COPY dist/azure_pipeline-1.zip .
 # 解压你的安装包
 RUN unzip azure_pipeline-1.zip
 
+# 设置为 Bash shell
+SHELL ["/bin/bash", "-c"]
+
 # set a virtualenv to run pip install
-RUN \
-    # pip install --upgrade pip \
-    # pip install --upgrade virtualenv && \
-    # virtualenv venv1 && \
-    # /venv1/scripts/activate && \
-    pip install -r azure_pipeline-1/requirements.txt
+RUN pip install --upgrade pip \
+    && pip install --upgrade virtualenv \
+    && cd /app/azure_pipeline-1 \
+    && virtualenv venv1 \
+    && source venv1/bin/activate \
+    && pip install -r requirements.txt
 
 # # chmode
 # RUN sudo chmod 777 ./azure_pipeline-1/azure_pipeline/scripts/run_script.sh
@@ -30,6 +32,9 @@ RUN \
 
 # 暴露应用程序的端口（如果有需要）
 EXPOSE 8000
+
+# 指定 uvicorn 的路径
+ENV PATH="/app/azure_pipeline-1/venv1/bin:$PATH"
 
 # 设置启动命令
 CMD ["uvicorn", "azure_pipeline-1.azure_pipeline.main:app", "--host", "0.0.0.0"]
