@@ -1,5 +1,8 @@
 # 使用官方 Python 镜像作为基础镜像
+
 FROM python:3.9
+
+# SHELL [ "bash", "-command" ]
 
 # 设置工作目录
 WORKDIR /app
@@ -11,9 +14,11 @@ COPY dist/azure_pipeline-1.zip .
 RUN unzip azure_pipeline-1.zip
 
 # set a virtualenv to run pip install
-RUN pip install virtualenv && \
-    virtualenv venv1 && \
-    ./venv1/scripts/activate && \
+RUN \
+    # pip install --upgrade pip \
+    # pip install --upgrade virtualenv && \
+    # virtualenv venv1 && \
+    # /venv1/scripts/activate && \
     pip install -r azure_pipeline-1/requirements.txt
 
 # # chmode
