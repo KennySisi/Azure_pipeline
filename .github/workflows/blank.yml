@@ -47,6 +47,9 @@ jobs:
         run: |
           docker image list
 
+  depoly:
+    # The type of runner that the job will run on
+    runs-on: self-hosted
       - name: push the docker image to docker hub
         run: |
           echo push dokcer image to docker hub
