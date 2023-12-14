@@ -52,7 +52,7 @@ pipeline {
                     // Show Image List Before
                     echo "docker image list after"
                     bat 'docker image list'
-                    bat 'docker push %DOCKER_IMAGE_NAME%:%env.BUILD_NUMBER%'
+                    bat 'docker push %DOCKER_IMAGE_NAME%:%BUILD_NUMBER%'
                     bat 'docker push %DOCKER_IMAGE_NAME%:latest'
                     // }
                 }
