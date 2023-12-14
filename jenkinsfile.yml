@@ -8,7 +8,8 @@ pipeline {
     
     environment {
         GITHUB_CREDENTIALS = credentials('github_token')
-        // DOCKERHUB_CREDENTIALS = credentials('docker credentials')
+        DOCKERHUB_CREDENTIALS = credentials('docker_token')
+        DOCKER_IMAGE_NAME = 'mly219blueheart/fastapi_1214'
     }
 
     options {
@@ -33,18 +34,24 @@ pipeline {
                     echo "style check"
                     // bat 'flake8 ./azure_pipeline/'
                     bat 'python setup.py sdist --formats=zip'
+                    echo "docker image list start"
+                    bat 'docker image list'
                 }
             }
         }
 
-                stage('Build docker image') {
+                stage('Build docker image and push to hub docker') {
             steps {
                 script {
+                    docker.withRegistry('https://registry.hub.docker.com', DOCKERHUB_CREDENTIALS) {
+                    def customImage = docker.build("${DOCKER_IMAGE_NAME}:${env.BUILD_NUMBER}")
+                    customImage.push("${DOCKER_IMAGE_NAME}:${env.BUILD_NUMBER}")
+                    customImage.push("${DOCKER_IMAGE_NAME}:latest")
                     // Show Image List Before
-                    echo "docker image list start"
-                    bat 'docker image list'
-                    bat 'docker build -t fastapi .'
-                    bat 'docker image list'
+                    // echo "docker image list start"
+                    // bat 'docker image list'
+                    // bat 'docker build -t fastapi .'
+                    // bat 'docker image list'
                 }
             }
         }
