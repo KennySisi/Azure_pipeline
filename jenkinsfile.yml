@@ -40,7 +40,7 @@ pipeline {
             }
         }
 
-                stage('Build docker image and push to hub docker') {
+        stage('Build docker image and push to hub docker') {
             steps {
                 script {
                     docker.withRegistry('https://registry.hub.docker.com', DOCKERHUB_CREDENTIALS) {
@@ -52,6 +52,7 @@ pipeline {
                     // bat 'docker image list'
                     // bat 'docker build -t fastapi .'
                     // bat 'docker image list'
+                    }
                 }
             }
         }
