@@ -1,9 +1,14 @@
 pipeline {
-    agent any
+    agent {
+      label {
+        label 'windows_agent'
+        retries 2
+      }
+    }
     
-        environment {
-        GITHUB_CREDENTIALS = credentials('1')
-        DOCKERHUB_CREDENTIALS = credentials('2')
+    environment {
+        GITHUB_CREDENTIALS = credentials('github_token')
+        // DOCKERHUB_CREDENTIALS = credentials('docker credentials')
     }
 
     options {
@@ -14,8 +19,9 @@ pipeline {
         stage('Checkout') {
             steps {
                 script {
-                    checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CleanBeforeCheckout']], submoduleCfg: [], userRemoteConfigs: [[url: 'git@github.com:KennySisi/Azure_pipeline.git/', credentialsId: env.GITHUB_CREDENTIALS]]])
-                    // checkout scm
+                    // checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CleanBeforeCheckout']], submoduleCfg: [], userRemoteConfigs: [[url: 'git@github.com:KennySisi/Azure_pipeline.git/', credentialsId: env.GITHUB_CREDENTIALS]]])
+                    echo "checkout start"
+                    checkout scm
                 }
             }
         }
@@ -28,60 +34,61 @@ pipeline {
                     // sh 'pip install -r requirements.txt'
 
                     // Code Style Check
-                    sh 'flake8 ./azure_pipeline/'
+                    // sh 'flake8 ./azure_pipeline/'
 
-                    // Build Python Package
-                    sh 'python setup.py sdist --formats=zip'
+                    // // Build Python Package
+                    // sh 'python setup.py sdist --formats=zip'
 
-                    // Build Docker Image
-                    sh 'docker build -t fastapi .'
+                    // // Build Docker Image
+                    // sh 'docker build -t fastapi .'
                     
                     // Show Image List Before
+                    echo "docker image list start"
                     sh 'docker image list'
                 }
             }
         }
 
-        stage('Deploy') {
-            steps {
-                script {
-                    // Push Docker Image to Docker Hub
-                    sh 'echo push docker image to docker hub'
-                    // withCredentials([usernamePassword(credentialsId: 'DOCKERHUB_CREDENTIALS', usernameVariable: 'DOCKERHUB_USERNAME', passwordVariable: 'DOCKERHUB_TOKEN')]) 
-                    //  withCredentials([string(credentialsId: '1', variable: 'DOCKERHUB_TOKEN')]) {
-                    withCredentials([string(credentialsId: '2', variable: 'DOCKERHUB_TOKEN')]) {
+        // stage('Deploy') {
+        //     steps {
+        //         script {
+        //             // Push Docker Image to Docker Hub
+        //             sh 'echo push docker image to docker hub'
+        //             // withCredentials([usernamePassword(credentialsId: 'DOCKERHUB_CREDENTIALS', usernameVariable: 'DOCKERHUB_USERNAME', passwordVariable: 'DOCKERHUB_TOKEN')]) 
+        //             //  withCredentials([string(credentialsId: '1', variable: 'DOCKERHUB_TOKEN')]) {
+        //             // withCredentials([string(credentialsId: '2', variable: 'DOCKERHUB_TOKEN')]) {
                    
-                        sh 'docker login -u dummy -p $DOCKERHUB_TOKEN' // 注意这里使用了假的用户名 'dummy'
-                        sh 'docker tag fastapi mly219blueheart/fastapi:latest'
-                        sh 'docker tag fastapi mly219blueheart/fastapi:${BUILD_NUMBER}'
-                        sh 'docker push mly219blueheart/fastapi:latest'
-                        sh 'docker push mly219blueheart/fastapi:${BUILD_NUMBER}'
-                    }
+        //                 sh 'docker login -u dummy -p $DOCKERHUB_CREDENTIALS' // 注意这里使用了假的用户名 'dummy'
+        //                 sh 'docker tag fastapi mly219blueheart/fastapi:latest'
+        //                 sh 'docker tag fastapi mly219blueheart/fastapi:${BUILD_NUMBER}'
+        //                 sh 'docker push mly219blueheart/fastapi:latest'
+        //                 sh 'docker push mly219blueheart/fastapi:${BUILD_NUMBER}'
+        //             }
 
-                    // Show Image List After
-                    sh 'docker image prune -f'
-                    sh 'docker image list'
+        //             // Show Image List After
+        //             sh 'docker image prune -f'
+        //             sh 'docker image list'
 
-                    // Run Terraform to Create Server VM
-                    dir('terraform') {
-                        sh 'echo "kenny debug"'
-                        sh 'echo $PWD'
-                        sh 'terraform refresh'
-                        sleep 20
-                        sh 'terraform init'
-                        sleep 20
-                        sh 'terraform plan'
-                        sleep 20
-                        sh 'terraform apply -auto-approve'
-                        sleep 20
-                        sh 'echo "kenny debug"'
-                        sh 'echo $PWD'
-                        sh 'terraform refresh'
-                        sleep 20
-                        sh 'terraform output public_ip_address'
-                    }
-                }
-            }
-        }
+        //             // Run Terraform to Create Server VM
+        //             dir('terraform') {
+        //                 sh 'echo "kenny debug"'
+        //                 sh 'echo $PWD'
+        //                 sh 'terraform refresh'
+        //                 sleep 20
+        //                 sh 'terraform init'
+        //                 sleep 20
+        //                 sh 'terraform plan'
+        //                 sleep 20
+        //                 sh 'terraform apply -auto-approve'
+        //                 sleep 20
+        //                 sh 'echo "kenny debug"'
+        //                 sh 'echo $PWD'
+        //                 sh 'terraform refresh'
+        //                 sleep 20
+        //                 sh 'terraform output public_ip_address'
+        //             }
+        //         }
+        //     }
+        // }
     }
 }
