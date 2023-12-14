@@ -50,6 +50,7 @@ pipeline {
                     // }
                     withCredentials([usernamePassword(credentialsId: DOCKERHUB_CREDENTIALS, usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
                         bat "docker login registry.hub.docker.com -u %DOCKER_USERNAME% -p %DOCKER_PASSWORD%"
+                    }
                     // bat 'docker login -u "mly219@163.com" -p "Zs850605:)"'
                     bat 'docker build -t %DOCKER_IMAGE_NAME%:%BUILD_NUMBER% .'
                     // Show Image List Before
