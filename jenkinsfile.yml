@@ -26,11 +26,24 @@ pipeline {
             }
         }
 
-        stage('Build and Code Style Check') {
+        stage('Code Style Check and build python package') {
+            steps {
+                script {
+                    // Show Image List Before
+                    echo "style check"
+                    // bat 'flake8 ./azure_pipeline/'
+                    bat 'python setup.py sdist --formats=zip'
+                }
+            }
+        }
+
+                stage('Build docker image') {
             steps {
                 script {
                     // Show Image List Before
                     echo "docker image list start"
+                    bat 'docker image list'
+                    bat 'docker build -t fastapi .'
                     bat 'docker image list'
                 }
             }
