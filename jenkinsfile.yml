@@ -57,7 +57,7 @@ pipeline {
                     echo "docker image list after"
                     bat 'docker image list'
                     bat 'docker push %DOCKER_IMAGE_NAME%:%BUILD_NUMBER%'
-                    bat 'docker tag %DOCKER_IMAGE_NAME% %DOCKER_IMAGE_NAME%:latest'
+                    bat 'docker tag %DOCKER_IMAGE_NAME%:%BUILD_NUMBER% %DOCKER_IMAGE_NAME%:latest'
                     bat 'docker push %DOCKER_IMAGE_NAME%:latest'
                 }
             }
