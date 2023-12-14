@@ -31,7 +31,7 @@ pipeline {
                 script {
                     // Show Image List Before
                     echo "docker image list start"
-                    // sh 'docker.exe image list'
+                    bat 'docker image list'
                 }
             }
         }
