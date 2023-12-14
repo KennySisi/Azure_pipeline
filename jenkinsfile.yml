@@ -29,66 +29,12 @@ pipeline {
         stage('Build and Code Style Check') {
             steps {
                 script {
-                    // Install Dependencies (if needed)
-                    // sh 'python -m pip install --upgrade pip'
-                    // sh 'pip install -r requirements.txt'
-
-                    // Code Style Check
-                    // sh 'flake8 ./azure_pipeline/'
-
-                    // // Build Python Package
-                    // sh 'python setup.py sdist --formats=zip'
-
-                    // // Build Docker Image
-                    // sh 'docker build -t fastapi .'
-                    
                     // Show Image List Before
                     echo "docker image list start"
-                    sh 'docker image list'
+                    sh 'docker.exe image list'
                 }
             }
         }
 
-        // stage('Deploy') {
-        //     steps {
-        //         script {
-        //             // Push Docker Image to Docker Hub
-        //             sh 'echo push docker image to docker hub'
-        //             // withCredentials([usernamePassword(credentialsId: 'DOCKERHUB_CREDENTIALS', usernameVariable: 'DOCKERHUB_USERNAME', passwordVariable: 'DOCKERHUB_TOKEN')]) 
-        //             //  withCredentials([string(credentialsId: '1', variable: 'DOCKERHUB_TOKEN')]) {
-        //             // withCredentials([string(credentialsId: '2', variable: 'DOCKERHUB_TOKEN')]) {
-                   
-        //                 sh 'docker login -u dummy -p $DOCKERHUB_CREDENTIALS' // 注意这里使用了假的用户名 'dummy'
-        //                 sh 'docker tag fastapi mly219blueheart/fastapi:latest'
-        //                 sh 'docker tag fastapi mly219blueheart/fastapi:${BUILD_NUMBER}'
-        //                 sh 'docker push mly219blueheart/fastapi:latest'
-        //                 sh 'docker push mly219blueheart/fastapi:${BUILD_NUMBER}'
-        //             }
-
-        //             // Show Image List After
-        //             sh 'docker image prune -f'
-        //             sh 'docker image list'
-
-        //             // Run Terraform to Create Server VM
-        //             dir('terraform') {
-        //                 sh 'echo "kenny debug"'
-        //                 sh 'echo $PWD'
-        //                 sh 'terraform refresh'
-        //                 sleep 20
-        //                 sh 'terraform init'
-        //                 sleep 20
-        //                 sh 'terraform plan'
-        //                 sleep 20
-        //                 sh 'terraform apply -auto-approve'
-        //                 sleep 20
-        //                 sh 'echo "kenny debug"'
-        //                 sh 'echo $PWD'
-        //                 sh 'terraform refresh'
-        //                 sleep 20
-        //                 sh 'terraform output public_ip_address'
-        //             }
-        //         }
-        //     }
-        // }
     }
 }
