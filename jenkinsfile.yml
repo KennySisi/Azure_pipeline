@@ -8,7 +8,7 @@ pipeline {
     
     environment {
         GITHUB_CREDENTIALS = credentials('github_token')
-        DOCKERHUB_CREDENTIALS = credentials('docker_token')
+        DOCKERHUB_CREDENTIALS = credentials('docker_token1')
         DOCKER_IMAGE_NAME = 'mly219blueheart/fastapi_1214'
     }
 
