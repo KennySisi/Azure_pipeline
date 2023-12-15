@@ -20,3 +20,9 @@ variable "password" {
   description = "password."
   default = "Zs850605:)"
 }
+
+
+variable "docker_image" {
+  description = "docker image name."
+  default = "mly219blueheart/fastapi:latest"
+}

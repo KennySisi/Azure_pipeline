@@ -218,7 +218,7 @@ resource "null_resource" "copy_and_execute_script" {
     inline = [
       "tr -d '\r' < /home/azureuser/run_script.sh > /home/azureuser/run_script_unix.sh",
       "sudo chmod 777 /home/azureuser/run_script_unix.sh",
-      "sudo /home/azureuser/run_script_unix.sh",
+      "sudo /home/azureuser/run_script_unix.sh ${var.docker_image}",
     ]
 
     connection {
