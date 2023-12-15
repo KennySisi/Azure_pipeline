@@ -70,10 +70,13 @@ pipeline {
         stage('Deploy to Azure') {
             steps {
                 script {
-                    withCredentials([azureServicePrincipal('azure_token')]) {
+                    dir('terraform') {
+                        withCredentials([azureServicePrincipal('azure_token')]) {
                         bat 'terraform init'
                         bat "terraform apply -var 'prefix=kenny2' -var 'docker_image=%DOCKER_IMAGE_NAME%:latest' --auto-approve"
+                        }
                     }
+
 
                 }
             }
