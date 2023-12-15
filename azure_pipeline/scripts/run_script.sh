@@ -9,3 +9,4 @@ sudo sh get-docker.sh
 # Run FastAPI Docker container
 if [$# -eq 1]; then
     sudo docker run -p 8000:8000 -d $1
+
