@@ -7,6 +7,8 @@ curl -fsSL https://get.docker.com -o get-docker.sh
 sudo sh get-docker.sh
 
 # Run FastAPI Docker container
-if [$# -eq 1]; then
+if [ $# -eq 1 ]; then
     sudo docker run -p 8000:8000 -d $1
+fi
+
 
