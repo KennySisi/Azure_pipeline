@@ -15,13 +15,20 @@ provider "azurerm" {
   features {}
 }
 
+resource "random_string" "random_str" {
+  length  = 6
+  special = false
+  upper   = false
+}
+
+
 resource "azurerm_resource_group" "main" {
-  name     = "${var.prefix}-resources"
+  name     = "${var.prefix}-resources-${random_string.random_str.result}"
   location = var.location
 }
 
 resource "azurerm_virtual_network" "main" {
-  name                = "${var.prefix}-network"
+  name                = "${var.prefix}-network-${random_string.random_str.result}"
   address_space       = ["10.0.0.0/22"]
   location            = azurerm_resource_group.main.location
   resource_group_name = azurerm_resource_group.main.name
@@ -37,14 +44,14 @@ resource "azurerm_subnet" "internal" {
 }
 
 resource "azurerm_public_ip" "main" {
-  name                = "${var.prefix}-public-ip"
+  name                = "${var.prefix}-public-ip-${random_string.random_str.result}"
   resource_group_name = azurerm_resource_group.main.name
   location            = azurerm_resource_group.main.location
   allocation_method   = "Dynamic"
 }
 
 resource "azurerm_network_security_group" "main" {
-  name                = "${var.prefix}-nsg"
+  name                = "${var.prefix}-nsg-${random_string.random_str.result}"
   resource_group_name = azurerm_resource_group.main.name
   location            = azurerm_resource_group.main.location
 
@@ -75,7 +82,7 @@ resource "azurerm_network_security_group" "main" {
 
 
 resource "azurerm_network_interface" "main" {
-  name                = "${var.prefix}-nic"
+  name                = "${var.prefix}-nic-${random_string.random_str.result}"
   resource_group_name = azurerm_resource_group.main.name
   location            = azurerm_resource_group.main.location
   # network_security_group_id = azurerm_network_security_group.main.id
@@ -129,7 +136,7 @@ locals {
 # }
 
 resource "azurerm_linux_virtual_machine" "main" {
-  name                            = "${var.prefix}-vm"
+  name                            = "${var.prefix}-vm-${random_string.random_str.result}"
   resource_group_name             = azurerm_resource_group.main.name
   location                        = azurerm_resource_group.main.location
   size                            = "Standard_D2s_v3"
