@@ -71,8 +71,8 @@ pipeline {
                 script {
                     dir('terraform') {
                         withCredentials([azureServicePrincipal('azure_token')]) {
-                        bat 'terraform refresh'
                         bat 'terraform init'
+                        bat 'terraform refresh'
                         bat 'terraform apply -var "prefix=kenny2" -var "docker_image=%DOCKER_IMAGE_NAME%:latest" --auto-approve'
                         }
                     }
