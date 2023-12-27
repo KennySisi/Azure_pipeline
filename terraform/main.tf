@@ -12,7 +12,11 @@ terraform {
 }
 
 provider "azurerm" {
-  features {}
+  features {
+    resource_group {
+      prevent_deletion_if_contains_resources = false
+    }
+  }
 }
 
 resource "random_string" "random_str" {
@@ -26,6 +30,11 @@ resource "azurerm_resource_group" "main" {
   name     = "${var.prefix}-resources-${random_string.random_str.result}"
   location = var.location
 }
+
+# resource "azurerm_resource_group" "main2" {
+#   name     = "${var.prefix}-resources2-${random_string.random_str.result}"
+#   location = var.location
+# }
 
 resource "azurerm_virtual_network" "main" {
   name                = "${var.prefix}-network-${random_string.random_str.result}"
@@ -205,9 +214,9 @@ resource "azurerm_linux_virtual_machine" "main" {
 
 resource "null_resource" "copy_and_execute_script" {
   # 在 apply 时运行一次
-  triggers = {
-    always_run = timestamp()
-  }
+  # triggers = {
+  #   always_run = timestamp()
+  # }
 
   provisioner "file" {
     source      = "F:/Learning/Code/fast_api/azure_pipeline/scripts/run_script.sh"  # 本地文件路径
