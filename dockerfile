@@ -1,5 +1,3 @@
-# 使用官方 Python 镜像作为基础镜像
-
 # FROM python:3.9
 FROM tiangolo/uvicorn-gunicorn:python3.9
 
@@ -10,10 +8,10 @@ WORKDIR /app
 # 复制你的 Python 安装包到工作目录
 COPY dist/azure_pipeline-1.zip .
 
-# 解压你的安装包
-RUN unzip azure_pipeline-1.zip
+RUN unzip azure_pipeline-1.zip && \
+    rm azure_pipeline-1.zip
 
-# 设置为 Bash shell
+# Bash shell
 SHELL ["/bin/bash", "-c"]
 
 # set a virtualenv to run pip install
@@ -30,12 +28,8 @@ RUN pip install --upgrade pip \
 # # run server scripts
 # RUN sudo ./azure_pipeline-1/azure_pipeline/scripts/run_script.sh
 
+EXPOSE 80
 
-# 暴露应用程序的端口（如果有需要）
-EXPOSE 8000
-
-# 指定 uvicorn 的路径
 ENV PATH="/app/azure_pipeline-1/venv1/bin:$PATH"
 
-# 设置启动命令
-CMD ["uvicorn", "azure_pipeline-1.azure_pipeline.main:app", "--host", "0.0.0.0"]
+CMD ["uvicorn", "azure_pipeline-1.azure_pipeline.main:app", "--host", "0.0.0.0", "--port", "80"]
