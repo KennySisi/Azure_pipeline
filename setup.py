@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='azure_pipeline',
-    version='1',
+    version='1.1',
     packages=find_packages(),
     package_data={
         '': ['requirements.txt'],
@@ -11,7 +11,8 @@ setup(
     install_requires=[
         # List your project dependencies here
         'fastapi==0.104.1',
-        'uvicorn==0.24.0.post1'
+        'uvicorn==0.24.0.post1',
+        'azure-applicationinsights>=0.1.1'
     ],
 )
 
