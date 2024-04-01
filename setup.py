@@ -12,6 +12,7 @@ setup(
         # List your project dependencies here
         'fastapi==0.104.1',
         'uvicorn==0.24.0.post1',
+        'pyodbc==5.1.0',
         'azure-applicationinsights>=0.1.1'
     ],
 )

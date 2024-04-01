@@ -1,3 +1,4 @@
 ﻿fastapi==0.104.1
 uvicorn==0.24.0.post1
 azure-applicationinsights>=0.1.1
+pyodbc==5.1.0
