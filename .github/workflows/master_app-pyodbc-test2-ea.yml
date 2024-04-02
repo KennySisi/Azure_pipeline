@@ -75,4 +75,6 @@ jobs:
         with:
           app-name: 'app-pyodbc-test2-ea'
           slot-name: 'Production'
+          startup-command: 'uvicorn azure_pipeline.main:app'
+
           
