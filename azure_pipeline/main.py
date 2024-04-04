@@ -18,7 +18,16 @@ sql_client = SqlManagementClient(credential, subscription_id)
 server = sql_client.servers.get(resource_group, server_name)
 connection_string = f"Driver={{ODBC Driver 17 for SQL Server}};Server=tcp:{server.fully_qualified_domain_name};Database={database_name};Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;Authentication=ActiveDirectoryMSI"
 
-
+conn_str = (
+    "DRIVER={ODBC Driver 17 for SQL Server};"
+    "SERVER=sql-srv-kenny-all-ea.database.windows.net;"
+    "DATABASE=sql-db-main-kenny-all-ea;"
+    #"UID=zhangsi@kennyisagoodman.top;"
+    #"PWD=Zs850605:);"
+    "Authentication=ActiveDirectoryMsi;"
+    #"Authentication=ActiveDirectoryPassword;"
+    "Trusted_Connection=yes;"
+)
 
 app = FastAPI()
 # instrumentation_key = os.environ.get('INSTRUMENTATION_KEY')
@@ -30,15 +39,7 @@ app = FastAPI()
 def add_two(number1):
     return {f"backend2: Your input is: {number1}"}
 
-conn_str = (
-    "DRIVER={ODBC Driver 17 for SQL Server};"
-    "SERVER=sql-srv-kenny-all-ea.database.windows.net;"
-    "DATABASE=sql-db-main-kenny-all-ea;"
-    #"UID=zhangsi@kennyisagoodman.top;"
-    #"PWD=Zs850605:);"
-    "Authentication=ActiveDirectoryMSI;"
-    #"Authentication=ActiveDirectoryPassword;"
-)
+
 
 @app.get("/dbtest")
 def queryDataBase():
