@@ -26,7 +26,6 @@ conn_str = (
     #"PWD=Zs850605:);"
     "Authentication=ActiveDirectoryMsi;"
     #"Authentication=ActiveDirectoryPassword;"
-    "Trusted_Connection=yes;"
 )
 
 app = FastAPI()
