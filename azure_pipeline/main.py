@@ -34,10 +34,10 @@ conn_str = (
     "DRIVER={ODBC Driver 17 for SQL Server};"
     "SERVER=sql-srv-kenny-all-ea.database.windows.net;"
     "DATABASE=sql-db-main-kenny-all-ea;"
-    "UID=zhangsi@kennyisagoodman.top;"
-    "PWD=Zs850605:);"
-    #"Authentication=ActiveDirectoryMSI;"
-    "Authentication=ActiveDirectoryPassword;"
+    #"UID=zhangsi@kennyisagoodman.top;"
+    #"PWD=Zs850605:);"
+    "Authentication=ActiveDirectoryMSI;"
+    #"Authentication=ActiveDirectoryPassword;"
 )
 
 @app.get("/dbtest")
