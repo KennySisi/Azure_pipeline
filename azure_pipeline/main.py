@@ -55,14 +55,14 @@ def queryDataBase():
 
     return str(rows)
 
-# @app.get("/storagetest")
-# def queryStorageAccount():
-#     account_name = "stvmkennymyappea"
-#     container_name = "testcontainer"
-#     blob_service_client = BlobServiceClient(f"https://{account_name}.blob.core.windows.net/", credential=)
-#     container_client = blob_service_client.get_container_client(container_name)
-#     blob_list = container_client.list_blob_names()
-#     return blob_list
+@app.get("/storagetest")
+def queryStorageAccount():
+    account_name = "stvmkennymyappea"
+    container_name = "testcontainer"
+    blob_service_client = BlobServiceClient(f"https://{account_name}.blob.core.windows.net/",credential=credential)
+    container_client = blob_service_client.get_container_client(container_name)
+    blob_list = container_client.list_blob_names()
+    return blob_list
 
 @app.get("/")
 def rootFunction():
