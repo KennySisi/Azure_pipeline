@@ -63,13 +63,13 @@ def queryStorageAccount():
 
     connection_string = f"DefaultEndpointsProtocol=https;AccountName={account_name};AccountKey={account_key};EndpointSuffix=core.windows.net"
 
-
-    blob_service_client = BlobServiceClient(f"https://{account_name}.blob.core.windows.net/",credential=credential)
+    blob_service_client = BlobServiceClient.from_connection_string(connection_string) 
+    #(f"https://{account_name}.blob.core.windows.net/", credential)
     container_client = blob_service_client.get_container_client(container_name)
     blob_list = container_client.list_blob_names()
     return blob_list
 
 @app.get("/")
 def rootFunction():
-    return "Hello, visitor new deploy triggered"
+    return "Hello 3, visitor new deploy triggered"
 
