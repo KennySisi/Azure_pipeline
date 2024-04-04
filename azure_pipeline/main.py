@@ -59,6 +59,11 @@ def queryDataBase():
 def queryStorageAccount():
     account_name = "stvmkennymyappea"
     container_name = "testcontainer"
+    account_key="+cXhEDQmxmUafIp4qHtc7qkx7GdRwUXBrdec1bfJveOfyv5Wb6dLa9kAI/Y8uuBFXWBUjhZE4+PV+AStrzKApQ=="
+
+    connection_string = f"DefaultEndpointsProtocol=https;AccountName={account_name};AccountKey={account_key};EndpointSuffix=core.windows.net"
+
+
     blob_service_client = BlobServiceClient(f"https://{account_name}.blob.core.windows.net/",credential=credential)
     container_client = blob_service_client.get_container_client(container_name)
     blob_list = container_client.list_blob_names()
