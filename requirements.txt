@@ -3,3 +3,5 @@ uvicorn==0.24.0.post1
 azure-applicationinsights>=0.1.1
 pyodbc==5.1.0
 azure-storage-blob==12.19.1
+azure-identity==1.15.0
+azure-mgmt-sql==3.0.1

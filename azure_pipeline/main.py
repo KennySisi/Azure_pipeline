@@ -3,6 +3,22 @@ import pyodbc
 # from azure.applicationinsights import applicationinsights
 
 from azure.storage.blob import BlobServiceClient
+from azure.identity import DefaultAzureCredential
+from azure.mgmt.sql import SqlManagementClient
+
+credential = DefaultAzureCredential()
+
+subscription_id = 'd90899a9-7716-4f55-88fe-22720fe4d18a'
+resource_group = 'rg-spoke-kenny-myapp-ea'
+server_name = 'sql-srv-kenny-all-ea'
+database_name = 'sql-db-main-kenny-all-ea'
+
+sql_client = SqlManagementClient(credential, subscription_id)
+
+server = sql_client.servers.get(resource_group, server_name)
+connection_string = f"Driver={{ODBC Driver 17 for SQL Server}};Server=tcp:{server.fully_qualified_domain_name};Database={database_name};Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;Authentication=ActiveDirectoryMSI"
+
+
 
 app = FastAPI()
 # instrumentation_key = os.environ.get('INSTRUMENTATION_KEY')
@@ -26,7 +42,7 @@ conn_str = (
 
 @app.get("/dbtest")
 def queryDataBase():
-    conn = pyodbc.connect(conn_str)
+    conn = pyodbc.connect(connection_string)
     curor = conn.cursor()
     curor.execute("select * from students") 
     rows = curor.fetchall()
