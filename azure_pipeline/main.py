@@ -34,15 +34,15 @@ conn_str = (
     "DRIVER={ODBC Driver 17 for SQL Server};"
     "SERVER=sql-srv-kenny-all-ea.database.windows.net;"
     "DATABASE=sql-db-main-kenny-all-ea;"
-    # "UID=zhangsi@kennyisagoodman.top;"
-    # "PWD=Zs850605:);"
-    "Authentication=ActiveDirectoryMSI;"
-    #"Authentication=ActiveDirectoryPassword;"
+    "UID=zhangsi@kennyisagoodman.top;"
+    "PWD=Zs850605:);"
+    #"Authentication=ActiveDirectoryMSI;"
+    "Authentication=ActiveDirectoryPassword;"
 )
 
 @app.get("/dbtest")
 def queryDataBase():
-    conn = pyodbc.connect(connection_string)
+    conn = pyodbc.connect(conn_str)
     curor = conn.cursor()
     curor.execute("select * from students") 
     rows = curor.fetchall()
