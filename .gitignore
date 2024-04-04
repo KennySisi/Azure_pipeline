@@ -14,6 +14,7 @@ __pycache__/
 *.egg-info/
 
 # Virtual Environments
+.venv/
 venv/
 env/
 bin/
