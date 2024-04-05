@@ -54,10 +54,11 @@ def queryDataBase():
 
     return str(rows)
 
-@app.get("/storagetest")
-def queryStorageAccount():
+@app.get("/storagetest/{item_name}")
+def queryStorageAccount(item_name: str):
     account_name = "stvmkennymyappea"
     container_name = "testcontainer"
+    blob_name = item_name #"stex_initial_setup.ps1"
     account_key="+cXhEDQmxmUafIp4qHtc7qkx7GdRwUXBrdec1bfJveOfyv5Wb6dLa9kAI/Y8uuBFXWBUjhZE4+PV+AStrzKApQ=="
 
     #AccountKey={account_key};
@@ -65,13 +66,16 @@ def queryStorageAccount():
 
     blob_service_client = BlobServiceClient.from_connection_string(connection_string, credential=credential) 
     #(f"https://{account_name}.blob.core.windows.net/", credential)
-    container_client = blob_service_client.get_container_client(container_name)
-    blob_list = container_client.list_blob_names()
-    ret = ''
-    for blob_name in blob_list:
-        ret = ret + blob_name + ";<br>"
+    blob_client = blob_service_client.get_blob_client(container=container_name, blob=blob_name)
+    blob_data = blob_client.download_blob() #container_client.list_blobs("stex_") #list_blob_names()
+    content = blob_data.readall()
+    return content
+
+    # ret = ''
+    # for blob_name in blob_list:
+    #     ret = ret + blob_name + ";<br>"
     
-    return ret
+    # return ret
 
 @app.get("/")
 def rootFunction():
