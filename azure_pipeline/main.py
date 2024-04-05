@@ -29,6 +29,8 @@ conn_str = (
     #"Authentication=ActiveDirectoryPassword;"
 )
 
+conn_str_hardcode = "Driver={ODBC Driver 17 for SQL Server};Server=sql-srv-kenny-all-ea.database.windows.net;Database=sql-db-main-kenny-all-ea;UID=zhangsi@kennyisagoodman.top;PWD=Zs850605:);Authentication=ActiveDirectoryPassword;"
+
 app = FastAPI()
 # instrumentation_key = os.environ.get('INSTRUMENTATION_KEY')
 # if instrumentation_key:
