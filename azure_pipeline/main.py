@@ -1,3 +1,4 @@
+import os
 from fastapi import FastAPI
 import pyodbc
 # from azure.applicationinsights import applicationinsights
@@ -42,7 +43,9 @@ def add_two(number1):
 
 @app.get("/dbtest")
 def queryDataBase():
-    conn = pyodbc.connect(conn_str)
+    # @Microsoft.KeyVault(SecretUri=https://test-key-vault-ea.vault.azure.net/secrets/DB-Kenny-Conn-Str/63abcb49cb264a1a852cd192f4377ffd)
+    connection_str_from_env = os.environ.get('DB_KENNY_CONN_STR')
+    conn = pyodbc.connect(connection_str_from_env)
     curor = conn.cursor()
     curor.execute("select * from students") 
     rows = curor.fetchall()
@@ -80,4 +83,6 @@ def queryStorageAccount(item_name: str):
 @app.get("/")
 def rootFunction():
     return "Hello 3, visitor new deploy triggered"
+
+
 
