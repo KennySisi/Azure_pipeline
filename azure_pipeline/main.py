@@ -39,9 +39,10 @@ app = FastAPI()
 def add_two(number1):
     return {f"backend env: Your input is: {number1}"}
 
-@app.get("env/{env_name}")
-def queryDBString(env_name: str):
-    return os.environ.get(env_name)
+@app.get("/env/{env_name}")
+def queryEnvString(env_name: str):
+    env_value = os.environ.get(env_name)
+    return env_value
 
 @app.get("/dbtest")
 def queryDataBase():
