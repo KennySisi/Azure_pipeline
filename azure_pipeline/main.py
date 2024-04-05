@@ -39,9 +39,9 @@ app = FastAPI()
 def add_two(number1):
     return {f"backend env: Your input is: {number1}"}
 
-@app.get("env/dbstring")
-def queryDBString():
-    return os.environ.get('DB_KENNY_CONN_STR')
+@app.get("env/{env_name}")
+def queryDBString(env_name: str):
+    return os.environ.get(env_name)
 
 @app.get("/dbtest")
 def queryDataBase():
@@ -64,7 +64,7 @@ def queryStorageAccount(item_name: str):
     account_name = "stvmkennymyappea"
     container_name = "testcontainer"
     blob_name = item_name #"stex_initial_setup.ps1"
-    account_key="+cXhEDQmxmUafIp4qHtc7qkx7GdRwUXBrdec1bfJveOfyv5Wb6dLa9kAI/Y8uuBFXWBUjhZE4+PV+AStrzKApQ=="
+    #account_key="+cXhEDQmxmUafIp4qHtc7qkx7GdRwUXBrdec1bfJveOfyv5Wb6dLa9kAI/Y8uuBFXWBUjhZE4+PV+AStrzKApQ=="
 
     #AccountKey={account_key};
     connection_string = f"DefaultEndpointsProtocol=https;AccountName={account_name};EndpointSuffix=core.windows.net"
