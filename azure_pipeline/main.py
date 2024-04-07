@@ -25,10 +25,10 @@ QUEUE_NAME = "test_queue_kenny"
 TOPIC_NAME = "test_topics_kenny"
 SUBSCRIPTION_NAME="test_subscription_kenny"
 
-sql_client = SqlManagementClient(credential, subscription_id)
+# sql_client = SqlManagementClient(credential, subscription_id)
 
-server = sql_client.servers.get(resource_group, server_name)
-connection_string = f"Driver={{ODBC Driver 17 for SQL Server}};Server=tcp:{server.fully_qualified_domain_name};Database={database_name};Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;Authentication=ActiveDirectoryMSI"
+# server = sql_client.servers.get(resource_group, server_name)
+# connection_string = f"Driver={{ODBC Driver 17 for SQL Server}};Server=tcp:{server.fully_qualified_domain_name};Database={database_name};Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;Authentication=ActiveDirectoryMSI"
 
 conn_str = (
     "DRIVER={ODBC Driver 17 for SQL Server};"
@@ -81,8 +81,8 @@ def queryStorageAccount(item_name: str):
     #account_key="+cXhEDQmxmUafIp4qHtc7qkx7GdRwUXBrdec1bfJveOfyv5Wb6dLa9kAI/Y8uuBFXWBUjhZE4+PV+AStrzKApQ=="
 
     #AccountKey={account_key};
-    connection_string = f"DefaultEndpointsProtocol=https;AccountName={account_name};EndpointSuffix=core.windows.net"
-
+    #connection_string = f"DefaultEndpointsProtocol=https;AccountName={account_name};EndpointSuffix=core.windows.net"
+    connection_string = "DefaultEndpointsProtocol=https;AccountName=stvmkennymyappea;AccountKey=+cXhEDQmxmUafIp4qHtc7qkx7GdRwUXBrdec1bfJveOfyv5Wb6dLa9kAI/Y8uuBFXWBUjhZE4+PV+AStrzKApQ==;EndpointSuffix=core.windows.net"
     blob_service_client = BlobServiceClient.from_connection_string(connection_string, credential=credential) 
     #(f"https://{account_name}.blob.core.windows.net/", credential)
     blob_client = blob_service_client.get_blob_client(container=container_name, blob=blob_name)
@@ -125,7 +125,6 @@ def serviceBusSender():
 
 @app.get("/receiver")
 def serviceBusReceiver():
-    credential = DefaultAzureCredential()
     servicebus_client = ServiceBusClient(fully_qualified_namespace=FULLY_QUALIFIED_NAMESPACE,
                                 credential=credential,
                                 logging_enable = True)
