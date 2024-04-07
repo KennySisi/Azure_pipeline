@@ -3,6 +3,11 @@ from fastapi import FastAPI
 import pyodbc
 # from azure.applicationinsights import applicationinsights
 
+from azure.servicebus import ServiceBusClient
+from azure.servicebus import ServiceBusMessage
+from azure.identity import DefaultAzureCredential
+import time
+
 from azure.storage.blob import BlobServiceClient
 from azure.identity import DefaultAzureCredential
 from azure.mgmt.sql import SqlManagementClient
@@ -13,6 +18,12 @@ subscription_id = 'd90899a9-7716-4f55-88fe-22720fe4d18a'
 resource_group = 'rg-spoke-kenny-myapp-ea'
 server_name = 'sql-srv-kenny-all-ea'
 database_name = 'sql-db-main-kenny-all-ea'
+
+
+FULLY_QUALIFIED_NAMESPACE = "sb-main-myapp-prod-ea.servicebus.windows.net"
+QUEUE_NAME = "test_queue_kenny"
+TOPIC_NAME = "test_topics_kenny"
+SUBSCRIPTION_NAME="test_subscription_kenny"
 
 sql_client = SqlManagementClient(credential, subscription_id)
 
@@ -90,4 +101,51 @@ def rootFunction():
     return "Hello 3, visitor new deploy triggered"
 
 
+@app.get("/sender")
+def serviceBusSender():
+    servicebus_client = ServiceBusClient(fully_qualified_namespace=FULLY_QUALIFIED_NAMESPACE, credential=credential, logging_enable = True)
+    #sender = servicevys_client.get_queue_sender(queue_name=const.TOPIC_NAME)
+    sender = servicebus_client.get_topic_sender(topic_name=TOPIC_NAME)
+    count = 1
+    output = "sent messages: "
+    while count < 5:
+        message = ServiceBusMessage(f"Sean {count} is a good man.")
+        output += str(message)
+        output += "    "
+        print("sent message: " + str(message))
+        sender.send_messages(message=message)
+        time.sleep(1)
+        count +=1
 
+    servicebus_client.close()
+    sender.close()
+    credential.close()
+
+    return output
+
+@app.get("/receiver")
+def serviceBusReceiver():
+    credential = DefaultAzureCredential()
+    servicebus_client = ServiceBusClient(fully_qualified_namespace=FULLY_QUALIFIED_NAMESPACE,
+                                credential=credential,
+                                logging_enable = True)
+    #receiver = servicevys_client.get_queue_receiver(queue_name=const.QUEUE_NAME)
+
+    receiver = servicebus_client.get_subscription_receiver(topic_name=TOPIC_NAME, 
+                                                            subscription_name=SUBSCRIPTION_NAME)
+    messages = receiver.receive_messages(max_message_count=5,max_wait_time=20)
+    time.sleep(3)
+    output = "Received messages: "
+    for message in messages:
+        print("Received message: " + str(message))
+        output += str(message)
+        output += "    "
+        receiver.complete_message(message=message)
+
+    servicebus_client.close()
+    receiver.close()
+    credential.close()
+    # messages = asyncio.run(receive_messages_async())
+    # print(str(messages))
+
+    return output
