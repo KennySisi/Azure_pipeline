@@ -74,7 +74,7 @@ jobs:
         id: deploy-to-webapp
         with:
           app-name: 'app-pyodbc-test2-ea'
-          slot-name: 'Production'
+          slot-name: 'staging'
           startup-command: 'uvicorn azure_pipeline.main:app --host 0.0.0.0 --port 8000'
 
           
