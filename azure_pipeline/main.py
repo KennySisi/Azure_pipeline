@@ -10,7 +10,9 @@ import time
 
 from azure.storage.blob import BlobServiceClient
 from azure.identity import DefaultAzureCredential
-from azure.mgmt.sql import SqlManagementClient
+# from azure.mgmt.sql import SqlManagementClient
+
+import redis
 
 credential = DefaultAzureCredential()
 
@@ -30,7 +32,7 @@ SUBSCRIPTION_NAME="test_subscription_kenny"
 # server = sql_client.servers.get(resource_group, server_name)
 # connection_string = f"Driver={{ODBC Driver 17 for SQL Server}};Server=tcp:{server.fully_qualified_domain_name};Database={database_name};Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;Authentication=ActiveDirectoryMSI"
 
-conn_str = (
+conn_str_system_assigned_iden = (
     "DRIVER={ODBC Driver 17 for SQL Server};"
     "SERVER=sql-srv-kenny-all-ea.database.windows.net;"
     "DATABASE=sql-db-main-kenny-all-ea;"
@@ -61,7 +63,7 @@ def queryEnvString(env_name: str):
 def queryDataBase():
     # @Microsoft.KeyVault(SecretUri=https://test-key-vault-ea.vault.azure.net/secrets/DB-Kenny-Conn-Str/63abcb49cb264a1a852cd192f4377ffd)
     connection_str_from_env = os.environ.get('DB_KENNY_CONN_STR')
-    conn = pyodbc.connect(connection_str_from_env)
+    conn = pyodbc.connect(conn_str_system_assigned_iden)
     curor = conn.cursor()
     curor.execute("select * from students") 
     rows = curor.fetchall()
@@ -122,6 +124,10 @@ def serviceBusSender():
     credential.close()
 
     return output
+@app.get("/redis/dbtest/{userID}")
+def dbcontentWithCache(userID:str):
+    return "to be added"
+
 
 @app.get("/receiver")
 def serviceBusReceiver():
