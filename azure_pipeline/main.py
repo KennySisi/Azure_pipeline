@@ -101,50 +101,50 @@ def rootFunction():
     return "Hello 3, visitor new deploy triggered"
 
 
-# @app.get("/sender")
-# def serviceBusSender():
-#     servicebus_client = ServiceBusClient(fully_qualified_namespace=FULLY_QUALIFIED_NAMESPACE, credential=credential, logging_enable = True)
-#     #sender = servicevys_client.get_queue_sender(queue_name=const.TOPIC_NAME)
-#     sender = servicebus_client.get_topic_sender(topic_name=TOPIC_NAME)
-#     count = 1
-#     output = "sent messages: "
-#     while count < 5:
-#         message = ServiceBusMessage(f"Sean {count} is a good man.")
-#         output += str(message)
-#         output += "    "
-#         print("sent message: " + str(message))
-#         sender.send_messages(message=message)
-#         time.sleep(1)
-#         count +=1
+@app.get("/sender")
+def serviceBusSender():
+    servicebus_client = ServiceBusClient(fully_qualified_namespace=FULLY_QUALIFIED_NAMESPACE, credential=credential, logging_enable = True)
+    #sender = servicevys_client.get_queue_sender(queue_name=const.TOPIC_NAME)
+    sender = servicebus_client.get_topic_sender(topic_name=TOPIC_NAME)
+    count = 1
+    output = "sent messages: "
+    while count < 5:
+        message = ServiceBusMessage(f"Sean {count} is a good man.")
+        output += str(message)
+        output += "    "
+        print("sent message: " + str(message))
+        sender.send_messages(message=message)
+        time.sleep(1)
+        count +=1
 
-#     servicebus_client.close()
-#     sender.close()
-#     credential.close()
+    servicebus_client.close()
+    sender.close()
+    credential.close()
 
-#     return output
+    return output
 
-# @app.get("/receiver")
-# def serviceBusReceiver():
-#     servicebus_client = ServiceBusClient(fully_qualified_namespace=FULLY_QUALIFIED_NAMESPACE,
-#                                 credential=credential,
-#                                 logging_enable = True)
-#     #receiver = servicevys_client.get_queue_receiver(queue_name=const.QUEUE_NAME)
+@app.get("/receiver")
+def serviceBusReceiver():
+    servicebus_client = ServiceBusClient(fully_qualified_namespace=FULLY_QUALIFIED_NAMESPACE,
+                                credential=credential,
+                                logging_enable = True)
+    #receiver = servicevys_client.get_queue_receiver(queue_name=const.QUEUE_NAME)
 
-#     receiver = servicebus_client.get_subscription_receiver(topic_name=TOPIC_NAME, 
-#                                                             subscription_name=SUBSCRIPTION_NAME)
-#     messages = receiver.receive_messages(max_message_count=5,max_wait_time=20)
-#     time.sleep(3)
-#     output = "Received messages: "
-#     for message in messages:
-#         print("Received message: " + str(message))
-#         output += str(message)
-#         output += "    "
-#         receiver.complete_message(message=message)
+    receiver = servicebus_client.get_subscription_receiver(topic_name=TOPIC_NAME, 
+                                                            subscription_name=SUBSCRIPTION_NAME)
+    messages = receiver.receive_messages(max_message_count=5,max_wait_time=20)
+    time.sleep(3)
+    output = "Received messages: "
+    for message in messages:
+        print("Received message: " + str(message))
+        output += str(message)
+        output += "    "
+        receiver.complete_message(message=message)
 
-#     servicebus_client.close()
-#     receiver.close()
-#     credential.close()
-#     # messages = asyncio.run(receive_messages_async())
-#     # print(str(messages))
+    servicebus_client.close()
+    receiver.close()
+    credential.close()
+    # messages = asyncio.run(receive_messages_async())
+    # print(str(messages))
 
-#     return output
+    return output
