@@ -61,15 +61,17 @@ def queryEnvString(env_name: str):
 
 @app.get("/dbtest")
 def queryDataBase():
-    # redis_cache_with_password = redis.StrictRedis("kenny.redis.cache.windows.net", password=os.environ.get('REDIS_ACCESS_KEY'))
-    # result_ping = redis_cache_with_password.ping()
-    # if result_ping:
-    #     print("Ping returned : " + str(result_ping))
+    password="jlpWO3oECK3BOn5ZHP7BFbZUfSVyBLjc4AzCaC2HB5A=" #os.environ.get('REDIS_ACCESS_KEY')
+    redis_cache_with_password = redis.StrictRedis(host="kenny.redis.cache.windows.net", port=6380, password=password,
+                                                  ssl=True)
+    result_ping = redis_cache_with_password.ping()
+    if result_ping:
+        print("Ping returned : " + str(result_ping))
 
-    # if redis_cache_with_password:
-    #     redis_result = redis_cache_with_password.get("dbtest")
-    #     if redis_result is not None:
-    #         return "Result from redis cache: " + redis_result
+    if redis_cache_with_password:
+        redis_result = redis_cache_with_password.get("dbtest")
+        if redis_result is not None:
+            return "Result from redis cache: " + redis_result
 
     # @Microsoft.KeyVault(SecretUri=https://test-key-vault-ea.vault.azure.net/secrets/DB-Kenny-Conn-Str/63abcb49cb264a1a852cd192f4377ffd)
     connection_str_from_env = os.environ.get('DB_KENNY_CONN_STR')
@@ -136,7 +138,9 @@ def serviceBusSender():
     return output
 @app.get("/redis/dbtest/{userID}")
 def dbcontentWithCache(userID:str):
-    redis_cache_with_password = redis.StrictRedis("kenny.redis.cache.windows.net", password=os.environ.get('REDIS_ACCESS_KEY'), port=6380)
+    password="jlpWO3oECK3BOn5ZHP7BFbZUfSVyBLjc4AzCaC2HB5A=" #os.environ.get('REDIS_ACCESS_KEY')
+    redis_cache_with_password = redis.StrictRedis(host="kenny.redis.cache.windows.net", port=6380, password=password, 
+                                                  ssl=True)
     result_ping = redis_cache_with_password.ping()
     if result_ping:
         print("Ping returned : " + str(result_ping))
