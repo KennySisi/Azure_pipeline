@@ -136,7 +136,7 @@ def serviceBusSender():
     return output
 @app.get("/redis/dbtest/{userID}")
 def dbcontentWithCache(userID:str):
-    redis_cache_with_password = redis.StrictRedis("kenny.redis.cache.windows.net", password=os.environ.get('REDIS_ACCESS_KEY'))
+    redis_cache_with_password = redis.StrictRedis("kenny.redis.cache.windows.net", password=os.environ.get('REDIS_ACCESS_KEY'), port=6380)
     result_ping = redis_cache_with_password.ping()
     if result_ping:
         print("Ping returned : " + str(result_ping))
