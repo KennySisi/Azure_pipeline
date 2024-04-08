@@ -51,7 +51,7 @@ app = FastAPI()
 #     azure_app_insights.init_app(app)
 
 #Global redis cache
-redis_access_key="jlpWO3oECK3BOn5ZHP7BFbZUfSVyBLjc4AzCaC2HB5A=" #os.environ.get('REDIS_ACCESS_KEY')
+redis_access_key=os.environ.get('REDIS_ACCESS_KEY') #"jlpWO3oECK3BOn5ZHP7BFbZUfSVyBLjc4AzCaC2HB5A=" #
 redis_cache_with_password = None
 
 
@@ -109,9 +109,11 @@ def clearRedisCache():
     if redis_cache_with_password is not None:
         redis_cache_with_password.flushall()
         redis_cache_with_password = None
+    
+    return "redis cache cleared"
 
 
-@app.get("/redis/dbtest/{userID}")
+@app.get("/dbtest/{userID}")
 def dbcontentWithCache(userID:str):
     start_time = time.perf_counter()
     global redis_cache_with_password
