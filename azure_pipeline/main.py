@@ -13,7 +13,12 @@ from azure.identity import DefaultAzureCredential
 # from azure.mgmt.sql import SqlManagementClient
 
 import redis
-redis_cache_with_password = redis.StrictRedis("kenny.redis.cache.windows.net", password=os.environ.get("REDIS_ACCESS_KEY"))
+
+password=os.environ.get('REDIS_ACCESS_KEY')
+redis_cache_with_password = redis.StrictRedis("kenny.redis.cache.windows.net", password=password)
+result_ping = redis_cache_with_password.ping()
+if result_ping:
+    print("Ping returned : " + str(result_ping))
 credential = DefaultAzureCredential()
 
 subscription_id = 'd90899a9-7716-4f55-88fe-22720fe4d18a'
