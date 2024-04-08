@@ -13,6 +13,7 @@ from azure.identity import DefaultAzureCredential
 # from azure.mgmt.sql import SqlManagementClient
 
 import redis
+import redis.exceptions
 
 credential = DefaultAzureCredential()
 
@@ -51,7 +52,7 @@ app = FastAPI()
 #     azure_app_insights.init_app(app)
 
 #Global redis cache
-redis_access_key=None, #os.environ.get('REDIS_ACCESS_KEY') #"jlpWO3oECK3BOn5ZHP7BFbZUfSVyBLjc4AzCaC2HB5A=" #
+redis_access_key="jlpWO3oECK3BOn5ZHP7BFbZUfSVyBLjc4AzCaC2HB5A=" #None, #os.environ.get('REDIS_ACCESS_KEY')
 redis_cache_with_password = None
 
 
@@ -69,10 +70,14 @@ def queryDataBase():
     start_time = time.perf_counter()
     global redis_cache_with_password
     if redis_cache_with_password is None:
-        redis_cache_with_password = redis.StrictRedis(host="kenny.redis.cache.windows.net", 
-                                                        port=6380, 
-                                                        password=redis_access_key,
-                                                        ssl=True)
+        try:
+            redis_cache_with_password = redis.StrictRedis(host="kenny.redis.cache.windows.net", 
+                                                            port=6380, 
+                                                            password=redis_access_key,
+                                                            ssl=True)
+        except redis.exceptions.RedisError: #redis.exceptions.ConnectionError:
+            return "Timeout connecting to redis server!"
+        
     if redis_cache_with_password is not None:
         result_ping = redis_cache_with_password.ping()
         if result_ping:
@@ -117,10 +122,13 @@ def dbcontentWithCache(userID:str):
     start_time = time.perf_counter()
     global redis_cache_with_password
     if redis_cache_with_password is None:
-        redis_cache_with_password = redis.StrictRedis(host="kenny.redis.cache.windows.net", 
-                                                        port=6380, 
-                                                        password=redis_access_key,
-                                                        ssl=True)
+        try:
+            redis_cache_with_password = redis.StrictRedis(host="kenny.redis.cache.windows.net", 
+                                                            port=6380, 
+                                                            password=redis_access_key,
+                                                            ssl=True)
+        except redis.exceptions.RedisError:
+            return "Timeout connecting to redis server!"
         
     if redis_cache_with_password is not None:
         result_ping = redis_cache_with_password.ping()
