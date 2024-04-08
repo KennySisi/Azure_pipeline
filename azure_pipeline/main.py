@@ -51,7 +51,7 @@ app = FastAPI()
 #     azure_app_insights.init_app(app)
 
 #Global redis cache
-password="jlpWO3oECK3BOn5ZHP7BFbZUfSVyBLjc4AzCaC2HB5A=" #os.environ.get('REDIS_ACCESS_KEY')
+redis_access_key="jlpWO3oECK3BOn5ZHP7BFbZUfSVyBLjc4AzCaC2HB5A=" #os.environ.get('REDIS_ACCESS_KEY')
 redis_cache_with_password = None
 
 
@@ -70,16 +70,16 @@ def queryDataBase():
     if redis_cache_with_password is None:
         redis_cache_with_password = redis.StrictRedis(host="kenny.redis.cache.windows.net", 
                                                         port=6380, 
-                                                        password=password,
+                                                        password=redis_access_key,
                                                         ssl=True)
-    result_ping = redis_cache_with_password.ping()
-    if result_ping:
-        print("Ping returned : " + str(result_ping))
+    if redis_cache_with_password is not None:
+        result_ping = redis_cache_with_password.ping()
+        if result_ping:
+            print("Ping returned : " + str(result_ping))
 
-    if redis_cache_with_password:
         redis_result = redis_cache_with_password.get("dbtest")
         if redis_result is not None:
-            return "Result from redis cache: " + redis_result
+            return "Result from redis cache: " + str(redis_result)
 
     # @Microsoft.KeyVault(SecretUri=https://test-key-vault-ea.vault.azure.net/secrets/DB-Kenny-Conn-Str/63abcb49cb264a1a852cd192f4377ffd)
     connection_str_from_env = os.environ.get('DB_KENNY_CONN_STR')
@@ -101,16 +101,17 @@ def dbcontentWithCache(userID:str):
     if redis_cache_with_password is None:
         redis_cache_with_password = redis.StrictRedis(host="kenny.redis.cache.windows.net", 
                                                         port=6380, 
-                                                        password=password,
+                                                        password=redis_access_key,
                                                         ssl=True)
-    result_ping = redis_cache_with_password.ping()
-    if result_ping:
-        print("Ping returned : " + str(result_ping))
+        
+    if redis_cache_with_password is not None:
+        result_ping = redis_cache_with_password.ping()
+        if result_ping:
+            print("Ping returned : " + str(result_ping))
 
-    if redis_cache_with_password:
-        redis_result = redis_cache_with_password.get(f"dbtest/{userID}")
-        if redis_result is not None:
-            return "Result from redis cache: " + redis_result
+            redis_result = redis_cache_with_password.get(f"dbtest/{userID}")
+            if redis_result is not None:
+                return "Result from redis cache: " + str(redis_result)
 
 
     connection_str_from_env = os.environ.get('DB_KENNY_CONN_STR')
