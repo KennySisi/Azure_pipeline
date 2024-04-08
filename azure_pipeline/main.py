@@ -13,7 +13,7 @@ from azure.identity import DefaultAzureCredential
 # from azure.mgmt.sql import SqlManagementClient
 
 import redis
-
+redis_cache_with_password = redis.StrictRedis("kenny.redis.cache.windows.net", password=os.environ.get("REDIS_ACCESS_KEY"))
 credential = DefaultAzureCredential()
 
 subscription_id = 'd90899a9-7716-4f55-88fe-22720fe4d18a'
@@ -61,9 +61,14 @@ def queryEnvString(env_name: str):
 
 @app.get("/dbtest")
 def queryDataBase():
+    if redis_cache_with_password:
+        redis_result = redis_cache_with_password.get("dbtest")
+        if redis_result is not None:
+            return "Result from redis cache: " + redis_result
+
     # @Microsoft.KeyVault(SecretUri=https://test-key-vault-ea.vault.azure.net/secrets/DB-Kenny-Conn-Str/63abcb49cb264a1a852cd192f4377ffd)
     connection_str_from_env = os.environ.get('DB_KENNY_CONN_STR')
-    conn = pyodbc.connect(conn_str_system_assigned_iden)
+    conn = pyodbc.connect(connection_str_from_env)
     curor = conn.cursor()
     curor.execute("select * from students") 
     rows = curor.fetchall()
@@ -73,7 +78,7 @@ def queryDataBase():
     curor.close()
     conn.close()
 
-    return str(rows)
+    return "Result from SQL Server Database: " + str(rows)
 
 @app.get("/storagetest/{item_name}")
 def queryStorageAccount(item_name: str):
@@ -126,7 +131,28 @@ def serviceBusSender():
     return output
 @app.get("/redis/dbtest/{userID}")
 def dbcontentWithCache(userID:str):
-    return "to be added"
+    if redis_cache_with_password:
+        redis_result = redis_cache_with_password.get(f"dbtest/{userID}")
+        if redis_result is not None:
+            return "Result from redis cache: " + redis_result
+
+
+    connection_str_from_env = os.environ.get('DB_KENNY_CONN_STR')
+    conn = pyodbc.connect(connection_str_from_env)
+    curor = conn.cursor()
+    curor.execute(f"select * from students where id = {userID}") 
+    rows = curor.fetchall()
+    for row in rows:
+        print(row)
+
+    curor.close()
+    conn.close()
+
+    string_result = str(rows)
+    if string_result is not None:
+        if redis_cache_with_password:
+            redis_cache_with_password.set(f"dbtest/{userID}", string_result, ex=300)
+    return "Result from SQL Server Database: " + string_result
 
 
 @app.get("/receiver")
