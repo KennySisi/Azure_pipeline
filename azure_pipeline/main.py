@@ -16,12 +16,6 @@ import redis
 
 credential = DefaultAzureCredential()
 
-password=os.environ.get('REDIS_ACCESS_KEY')
-redis_cache_with_password = redis.StrictRedis("kenny.redis.cache.windows.net", password=password)
-result_ping = redis_cache_with_password.ping()
-if result_ping:
-    print("Ping returned : " + str(result_ping))
-
 subscription_id = 'd90899a9-7716-4f55-88fe-22720fe4d18a'
 resource_group = 'rg-spoke-kenny-myapp-ea'
 server_name = 'sql-srv-kenny-all-ea'
@@ -67,6 +61,11 @@ def queryEnvString(env_name: str):
 
 @app.get("/dbtest")
 def queryDataBase():
+    redis_cache_with_password = redis.StrictRedis("kenny.redis.cache.windows.net", password=os.environ.get('REDIS_ACCESS_KEY'))
+    result_ping = redis_cache_with_password.ping()
+    if result_ping:
+        print("Ping returned : " + str(result_ping))
+
     if redis_cache_with_password:
         redis_result = redis_cache_with_password.get("dbtest")
         if redis_result is not None:
@@ -137,6 +136,11 @@ def serviceBusSender():
     return output
 @app.get("/redis/dbtest/{userID}")
 def dbcontentWithCache(userID:str):
+    redis_cache_with_password = redis.StrictRedis("kenny.redis.cache.windows.net", password=os.environ.get('REDIS_ACCESS_KEY'))
+    result_ping = redis_cache_with_password.ping()
+    if result_ping:
+        print("Ping returned : " + str(result_ping))
+
     if redis_cache_with_password:
         redis_result = redis_cache_with_password.get(f"dbtest/{userID}")
         if redis_result is not None:
