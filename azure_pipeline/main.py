@@ -66,6 +66,7 @@ def queryEnvString(env_name: str):
 
 @app.get("/dbtest")
 def queryDataBase():
+    start_time = time.perf_counter()
     global redis_cache_with_password
     if redis_cache_with_password is None:
         redis_cache_with_password = redis.StrictRedis(host="kenny.redis.cache.windows.net", 
@@ -79,7 +80,8 @@ def queryDataBase():
 
         redis_result = redis_cache_with_password.get("dbtest")
         if redis_result is not None:
-            return "Result from redis cache: " + str(redis_result)
+            end_time = time.perf_counter() - start_time
+            return "Result from redis cache: " + str(redis_result) + "consuming time(ms): " + str(end_time*1000)
 
     # @Microsoft.KeyVault(SecretUri=https://test-key-vault-ea.vault.azure.net/secrets/DB-Kenny-Conn-Str/63abcb49cb264a1a852cd192f4377ffd)
     connection_str_from_env = os.environ.get('DB_KENNY_CONN_STR')
@@ -93,10 +95,25 @@ def queryDataBase():
     curor.close()
     conn.close()
 
-    return "Result from SQL Server Database: " + str(rows)
+    string_result = str(rows)
+    if string_result is not None:
+        if redis_cache_with_password is not None:
+            redis_cache_with_password.set(f"dbtest", string_result, ex=300)
+
+    end_time = time.perf_counter() - start_time
+    return "Result from SQL Server Database: " + string_result + ", consuming time(ms): " + str(end_time*1000)
+
+@app.get("/redis/clear")
+def clearRedisCache():
+    global redis_cache_with_password
+    if redis_cache_with_password is not None:
+        redis_cache_with_password.flushall()
+        redis_cache_with_password = None
+
 
 @app.get("/redis/dbtest/{userID}")
 def dbcontentWithCache(userID:str):
+    start_time = time.perf_counter()
     global redis_cache_with_password
     if redis_cache_with_password is None:
         redis_cache_with_password = redis.StrictRedis(host="kenny.redis.cache.windows.net", 
@@ -111,7 +128,8 @@ def dbcontentWithCache(userID:str):
 
             redis_result = redis_cache_with_password.get(f"dbtest/{userID}")
             if redis_result is not None:
-                return "Result from redis cache: " + str(redis_result)
+                end_time = time.perf_counter() - start_time
+                return "Result from redis cache: " + str(redis_result) + ", consuming time(ms): " + str(end_time*1000)
 
 
     connection_str_from_env = os.environ.get('DB_KENNY_CONN_STR')
@@ -127,9 +145,11 @@ def dbcontentWithCache(userID:str):
 
     string_result = str(rows)
     if string_result is not None:
-        if redis_cache_with_password:
+        if redis_cache_with_password is not None:
             redis_cache_with_password.set(f"dbtest/{userID}", string_result, ex=300)
-    return "Result from SQL Server Database: " + string_result
+
+    end_time = time.perf_counter() - start_time
+    return "Result from SQL Server Database: " + string_result + ", consuming time(ms): " + str(end_time*1000)
 
 
 @app.get("/storagetest/{item_name}")
