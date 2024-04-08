@@ -52,7 +52,7 @@ app = FastAPI()
 #     azure_app_insights.init_app(app)
 
 #Global redis cache
-redis_access_key=None #"jlpWO3oECK3BOn5ZHP7BFbZUfSVyBLjc4AzCaC2HB5A=" , #os.environ.get('REDIS_ACCESS_KEY')
+redis_access_key="jlpWO3oECK3BOn5ZHP7BFbZUfSVyBLjc4AzCaC2HB5A=" , #os.environ.get('REDIS_ACCESS_KEY')
 redis_cache_with_password = None
 
 
