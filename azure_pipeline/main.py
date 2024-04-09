@@ -139,7 +139,6 @@ def clearRedisCache():
     global redis_cache_with_password
     if redis_cache_with_password is not None:
         redis_cache_with_password.flushall()
-        redis_cache_with_password = None
     
     return "redis cache cleared"
 
