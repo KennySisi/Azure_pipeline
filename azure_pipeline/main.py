@@ -52,7 +52,7 @@ app = FastAPI()
 #     azure_app_insights.init_app(app)
 
 #Global redis cache
-redis_access_key="jlpWO3oECK3BOn5ZHP7BFbZUfSVyBLjc4AzCaC2HB5A=" , #os.environ.get('REDIS_ACCESS_KEY')
+redis_access_key = "jlpWO3oECK3BOn5ZHP7BFbZUfSVyBLjc4AzCaC2HB5A=" , #os.environ.get('REDIS_ACCESS_KEY')  None
 redis_cache_with_password = None
 
 
@@ -79,10 +79,6 @@ def queryDataBase():
             return "Timeout connecting to redis server!"
         
     if redis_cache_with_password is not None:
-        result_ping = redis_cache_with_password.ping()
-        if result_ping:
-            print("Ping returned : " + str(result_ping))
-
         redis_result = redis_cache_with_password.get("dbtest")
         if redis_result is not None:
             end_time = time.perf_counter() - start_time
@@ -95,7 +91,7 @@ def queryDataBase():
     curor.execute("select * from students") 
     rows = curor.fetchall()
     for row in rows:
-        print(row)
+        print(str(row))
 
     curor.close()
     conn.close()
@@ -117,6 +113,22 @@ def clearRedisCache():
     
     return "redis cache cleared"
 
+@app.get('/dbtest/ping')
+def pingDB():
+    global redis_cache_with_password
+    if redis_cache_with_password is None:
+        try:
+            redis_cache_with_password = redis.StrictRedis(host="kenny.redis.cache.windows.net", 
+                                                            port=6380, 
+                                                            password=redis_access_key,
+                                                            ssl=True)
+        except redis.exceptions.RedisError:
+            return "Timeout connecting to redis server!"
+        
+    if redis_cache_with_password is not None:
+        result_ping = redis_cache_with_password.ping()
+        return "Ping returned : " + str(result_ping)
+
 @app.get("/dbtest/{userID}")
 def dbcontentWithCache(userID:str):
     start_time = time.perf_counter()
@@ -131,14 +143,10 @@ def dbcontentWithCache(userID:str):
             return "Timeout connecting to redis server!"
         
     if redis_cache_with_password is not None:
-        result_ping = redis_cache_with_password.ping()
-        if result_ping:
-            print("Ping returned : " + str(result_ping))
-
-            redis_result = redis_cache_with_password.get(f"dbtest/{userID}")
-            if redis_result is not None:
-                end_time = time.perf_counter() - start_time
-                return "Result from redis cache: " + str(redis_result) + ", consuming time(ms): " + str(end_time*1000)
+        redis_result = redis_cache_with_password.get(f"dbtest/{userID}")
+        if redis_result is not None:
+            end_time = time.perf_counter() - start_time
+            return "Result from redis cache: " + str(redis_result) + ", consuming time(ms): " + str(end_time*1000)
 
 
     connection_str_from_env = os.environ.get('DB_KENNY_CONN_STR')
@@ -147,7 +155,7 @@ def dbcontentWithCache(userID:str):
     curor.execute(f"select * from students where id = {userID}") 
     rows = curor.fetchall()
     for row in rows:
-        print(row)
+        print(str(row))
 
     curor.close()
     conn.close()
