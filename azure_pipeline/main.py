@@ -79,7 +79,8 @@ def queryDataBase():
         try:
             redis_cache_with_password = redis.StrictRedis(host="kenny.redis.cache.windows.net", 
                                                             port=6380, 
-                                                            password=redis_access_key)
+                                                            password=redis_access_key,
+                                                            ssl=True)
         except redis.exceptions.RedisError: #redis.exceptions.ConnectionError:
             return "Timeout connecting to redis server!"
         
@@ -124,7 +125,8 @@ def setRedisKey(value:str):
     try:
         redis_cache_with_password = redis.StrictRedis(host="kenny.redis.cache.windows.net", 
                                                         port=6380, 
-                                                        password=redis_access_key)
+                                                        password=redis_access_key,
+                                                        ssl=True)
     except redis.exceptions.RedisError:
         return "Timeout connecting to redis server!"
     
@@ -146,7 +148,8 @@ def pingDB():
         try:
             redis_cache_with_password = redis.StrictRedis(host="kenny.redis.cache.windows.net", 
                                                             port=6380, 
-                                                            password=redis_access_key)
+                                                            password=redis_access_key,
+                                                            ssl=True)
         except redis.exceptions.RedisError:
             return "Timeout connecting to redis server!"
         
@@ -163,7 +166,8 @@ def dbcontentWithCache(userID:str):
         try:
             redis_cache_with_password = redis.StrictRedis(host="kenny.redis.cache.windows.net", 
                                                             port=6380, 
-                                                            password=redis_access_key)
+                                                            password=redis_access_key,
+                                                            ssl=True)
         except redis.exceptions.RedisError:
             return "Timeout connecting to redis server!"
         
