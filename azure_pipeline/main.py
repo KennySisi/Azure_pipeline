@@ -62,7 +62,9 @@ def add_two(number1):
 
 @app.get("/global/{global_name}")
 def queryEnvString(global_name: str):
-    return f"{global_name}"
+    global_vars = globals()
+    if global_name in global_vars:
+        return global_vars[global_name]
 
 @app.get("/env/{env_name}")
 def queryEnvString(env_name: str):
