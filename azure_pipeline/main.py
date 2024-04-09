@@ -60,6 +60,10 @@ redis_cache_with_password = None
 def add_two(number1):
     return {f"backend env: Your input is: {number1}"}
 
+@app.get("/global/{global_name}")
+def queryEnvString(global_name: str):
+    return f"{global_name}"
+
 @app.get("/env/{env_name}")
 def queryEnvString(env_name: str):
     env_value = os.environ.get(env_name)
@@ -68,6 +72,7 @@ def queryEnvString(env_name: str):
 @app.get("/dbtest")
 def queryDataBase():
     start_time = time.perf_counter()
+    global redis_access_key
     global redis_cache_with_password
     if redis_cache_with_password is None:
         try:
@@ -104,6 +109,28 @@ def queryDataBase():
     end_time = time.perf_counter() - start_time
     return "Result from SQL Server Database: " + string_result + ", consuming time(ms): " + str(end_time*1000)
 
+@app.get('/rediskey/{value}')
+def setRedisKey(value:str):
+    global redis_access_key
+    redis_access_key = value
+    if redis_access_key == "None":
+        redis_access_key = None
+    
+    global redis_cache_with_password
+    if redis_cache_with_password is not None:
+        redis_cache_with_password.flushall()
+        redis_cache_with_password = None
+    
+    try:
+        redis_cache_with_password = redis.StrictRedis(host="kenny.redis.cache.windows.net", 
+                                                        port=6380, 
+                                                        password=redis_access_key,
+                                                        ssl=True)
+    except redis.exceptions.RedisError:
+        return "Timeout connecting to redis server!"
+    
+    return "redis_cache_with_password reset with new access key: " + value
+
 @app.get("/redis/clear")
 def clearRedisCache():
     global redis_cache_with_password
@@ -113,8 +140,9 @@ def clearRedisCache():
     
     return "redis cache cleared"
 
-@app.get('/dbtest/ping')
+@app.get("/dbtest/ping")
 def pingDB():
+    global redis_access_key
     global redis_cache_with_password
     if redis_cache_with_password is None:
         try:
@@ -132,6 +160,7 @@ def pingDB():
 @app.get("/dbtest/{userID}")
 def dbcontentWithCache(userID:str):
     start_time = time.perf_counter()
+    global redis_access_key
     global redis_cache_with_password
     if redis_cache_with_password is None:
         try:
