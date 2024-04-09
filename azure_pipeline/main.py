@@ -55,8 +55,6 @@ app = FastAPI()
 redis_access_key = os.environ.get('REDIS_ACCESS_KEY') #None #"jlpWO3oECK3BOn5ZHP7BFbZUfSVyBLjc4AzCaC2HB5A="
 redis_cache_with_password = None
 
-
-
 @app.get("/Add/{number1}")
 def add_two(number1):
     return {f"backend env: Your input is: {number1}"}
