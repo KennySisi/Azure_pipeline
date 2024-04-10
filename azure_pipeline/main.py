@@ -69,7 +69,7 @@ def queryGlobals():
 def queryEnvString(global_name: str):
     global_vars = globals()
     if global_name in global_vars:
-        return global_vars[global_name]
+        return str(global_vars[global_name])
 
 @app.get("/env/{env_name}")
 def queryEnvString(env_name: str):
