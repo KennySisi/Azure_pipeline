@@ -53,11 +53,17 @@ app = FastAPI()
 
 #Global redis cache
 redis_access_key = os.environ.get('REDIS_ACCESS_KEY') #None #"jlpWO3oECK3BOn5ZHP7BFbZUfSVyBLjc4AzCaC2HB5A="
+redis_host = os.environ.get("REDIS_CACHE_HOST")
 redis_cache_with_password = None
 
 @app.get("/Add/{number1}")
 def add_two(number1):
     return {f"backend env: Your input is: {number1}"}
+
+@app.get("/globals")
+def queryEnvString(global_name: str):
+    global_vars = globals()
+    return str(global_vars)
 
 @app.get("/global/{global_name}")
 def queryEnvString(global_name: str):
@@ -75,9 +81,10 @@ def queryDataBase():
     start_time = time.perf_counter()
     global redis_access_key
     global redis_cache_with_password
+    global redis_host
     if redis_cache_with_password is None:
         try:
-            redis_cache_with_password = redis.StrictRedis(host=os.environ.get("REDIS_CACHE_HOST"), 
+            redis_cache_with_password = redis.StrictRedis(host=redis_host, 
                                                             port=6380, 
                                                             password=redis_access_key,
                                                             ssl=True)
@@ -123,7 +130,7 @@ def setRedisKey(value:str):
         redis_cache_with_password = None
     
     try:
-        redis_cache_with_password = redis.StrictRedis(host="kenny.redis.cache.windows.net", 
+        redis_cache_with_password = redis.StrictRedis(host=redis_host, 
                                                         port=6380, 
                                                         password=redis_access_key,
                                                         ssl=True)
@@ -146,7 +153,7 @@ def pingDB():
     global redis_cache_with_password
     if redis_cache_with_password is None:
         try:
-            redis_cache_with_password = redis.StrictRedis(host="kenny.redis.cache.windows.net", 
+            redis_cache_with_password = redis.StrictRedis(host=redis_host, 
                                                             port=6380, 
                                                             password=redis_access_key,
                                                             ssl=True)
@@ -164,7 +171,7 @@ def dbcontentWithCache(userID:str):
     global redis_cache_with_password
     if redis_cache_with_password is None:
         try:
-            redis_cache_with_password = redis.StrictRedis(host="kenny.redis.cache.windows.net", 
+            redis_cache_with_password = redis.StrictRedis(host=redis_host, 
                                                             port=6380, 
                                                             password=redis_access_key,
                                                             ssl=True)
