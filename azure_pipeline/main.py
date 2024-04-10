@@ -77,7 +77,7 @@ def queryDataBase():
     global redis_cache_with_password
     if redis_cache_with_password is None:
         try:
-            redis_cache_with_password = redis.StrictRedis(host="kenny.redis.cache.windows.net", 
+            redis_cache_with_password = redis.StrictRedis(host=os.environ.get("REDIS_CACHE_HOST"), 
                                                             port=6380, 
                                                             password=redis_access_key,
                                                             ssl=True)
@@ -273,3 +273,6 @@ def serviceBusReceiver():
     # print(str(messages))
 
     return output
+
+
+#GR96N-6DH92-22DGK-X4QBB-BBMHR 
