@@ -61,7 +61,7 @@ def add_two(number1):
     return {f"backend env: Your input is: {number1}"}
 
 @app.get("/globals")
-def queryEnvString(global_name: str):
+def queryGlobals():
     global_vars = globals()
     return str(global_vars)
 
