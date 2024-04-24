@@ -19,12 +19,9 @@ SHELL ["/bin/bash", "-c"]
     # $$ add-apt-repository 'deb [arch=amd64] https://packages.microsoft.com/ubuntu/18.04/prod bionic main' \
     # && sudo su \
 
-RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
-    curl https://packages.microsoft.com/config/debian/10/prod.list > /etc/apt/sources.list.d/mssql-release.list \
-    && apt-get update \
-    && apt-get install -y unixodbc-dev \
-    && apt-get install -y msodbcsql17 
-
+RUN apt-get update && apt-get install -y curl gnupg \
+    && apt-get update
+    
 RUN pip install --upgrade pip \
     && pip install --upgrade virtualenv \
     && cd /app/azure_pipeline-1 \
