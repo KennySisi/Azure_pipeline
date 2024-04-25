@@ -1,13 +1,17 @@
-from fastapi import FastAPI
+import json
 
-app = FastAPI()
+def lambda_handler(event, context):
+    # 从事件中获取两个数字
+    number1 = event.get('number1', 0)
+    number2 = event.get('number2', 0)
 
+    # 计算两个数字的和
+    result = number1 + number2
 
-@app.get("/")
-def rootFunction():
-    return "Hello, visitor"
+    # 构造返回的 JSON 数据
+    response = {
+        'statusCode': 200,
+        'body': json.dumps({'result': result})
+    }
 
-
-@app.get("/Add/{number1}")
-def add_two(number1):
-    return {f"Your input is: {number1}"}
+    return response

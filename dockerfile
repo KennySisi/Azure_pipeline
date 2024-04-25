@@ -1,42 +1,8 @@
-# FROM python:3.9
-FROM tiangolo/uvicorn-gunicorn:python3.9
+# 使用 AWS Lambda 官方 Python 3.8 镜像作为基础镜像
+FROM public.ecr.aws/lambda/python:3.8
 
+# 将 Lambda 函数代码文件拷贝到容器中的 /var/task 目录下
+COPY main.py /var/task/
 
-# 设置工作目录
-WORKDIR /app
-
-# 复制你的 Python 安装包到工作目录
-COPY dist/azure_pipeline-1.zip .
-
-RUN unzip azure_pipeline-1.zip && \
-    rm azure_pipeline-1.zip
-
-# Bash shell
-SHELL ["/bin/bash", "-c"]
-
-# set a virtualenv to run pip install
-
-    # $$ add-apt-repository 'deb [arch=amd64] https://packages.microsoft.com/ubuntu/18.04/prod bionic main' \
-    # && sudo su \
-
-RUN apt-get update && apt-get install -y curl gnupg \
-    && apt-get update
-    
-RUN pip install --upgrade pip \
-    && pip install --upgrade virtualenv \
-    && cd /app/azure_pipeline-1 \
-    && virtualenv venv1 \
-    && source venv1/bin/activate \
-    && pip install -r requirements.txt
-
-# # chmode
-# RUN sudo chmod 777 ./azure_pipeline-1/azure_pipeline/scripts/run_script.sh
-
-# # run server scripts
-# RUN sudo ./azure_pipeline-1/azure_pipeline/scripts/run_script.sh
-
-EXPOSE 80
-
-ENV PATH="/app/azure_pipeline-1/venv1/bin:$PATH"
-
-CMD ["uvicorn", "azure_pipeline-1.azure_pipeline.main:app", "--host", "0.0.0.0", "--port", "80"]
+# 设置 Lambda 函数入口为 lambda_function.lambda_handler
+CMD ["azure_pipeline.main.lambda_handler"]
