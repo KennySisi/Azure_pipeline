@@ -249,9 +249,9 @@ def serviceBusSender():
         time.sleep(1)
         count +=1
 
-    servicebus_client.close()
-    sender.close()
-    credential.close()
+    #servicebus_client.close()
+    # sender.close()
+    # credential.close()
 
     return output
 
