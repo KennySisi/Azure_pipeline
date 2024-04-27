@@ -2,8 +2,8 @@ import json
 
 def lambda_handler(event, context):
     # 从事件中获取两个数字
-    number1 = event.get('number1', 0)
-    number2 = event.get('number2', 0)
+    number1 = event.get('number1', 17)
+    number2 = event.get('number2', 14)
 
     # 计算两个数字的和
     result = number1 + number2

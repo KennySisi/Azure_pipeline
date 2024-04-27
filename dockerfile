@@ -5,4 +5,4 @@ FROM public.ecr.aws/lambda/python:3.8
 COPY azure_pipeline/main.py /var/task/
 
 # 设置 Lambda 函数入口为 lambda_function.lambda_handler
-CMD ["azure_pipeline.main.lambda_handler"]
+CMD ["main.lambda_handler"]
