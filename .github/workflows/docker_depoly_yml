@@ -1,0 +1,31 @@
+name: Azure WebApp Deployment
+
+on:
+  push:
+    branches:
+      - master  
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v4
+
+    - name: Login to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+    - name: Pull Docker image from Docker Hub
+      run: docker pull mly219blueheart/azure_pipeline:20241015
+
+    - name: Deploy to Azure Web App
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: 'app-myapp-0331-2-prod-ae' 
+        slot-name: 'PRODUCTION'  
+        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+        images: 'mly219blueheart/azure_pipeline:20241015'
