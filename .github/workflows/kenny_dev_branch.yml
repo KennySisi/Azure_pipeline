@@ -6,7 +6,7 @@ name: Build and deploy container app to Azure Web App - app-myapp-0331-2-prod-ae
 on:
   push:
     branches:
-      - master
+      - kenny_dev
   workflow_dispatch:
 
 jobs:
@@ -30,7 +30,7 @@ jobs:
       uses: docker/build-push-action@v3
       with:
         push: true
-        tags: index.docker.io/${{ secrets.AzureAppService_ContainerUsername_e5bd4c1613f641c7b57fd3d243db2f26 }}/mly219blueheart/azure_pipeline:${{ github.sha }}
+        tags: index.docker.io/${{ secrets.AzureAppService_ContainerUsername_e5bd4c1613f641c7b57fd3d243db2f26 }}/azure_pipeline:${{ github.run_number }}
         file: ./Dockerfile
 
   deploy:
@@ -48,4 +48,4 @@ jobs:
         app-name: 'app-myapp-0331-2-prod-ae'
         slot-name: 'production'
         publish-profile: ${{ secrets.AzureAppService_PublishProfile_727f4d9639ff41808b3b232f18c0ab82 }}
-        images: 'index.docker.io/${{ secrets.AzureAppService_ContainerUsername_e5bd4c1613f641c7b57fd3d243db2f26 }}/mly219blueheart/azure_pipeline:${{ github.run_number }}'
+        images: 'index.docker.io/${{ secrets.AzureAppService_ContainerUsername_e5bd4c1613f641c7b57fd3d243db2f26 }}/azure_pipeline:${{ github.run_number }}'
