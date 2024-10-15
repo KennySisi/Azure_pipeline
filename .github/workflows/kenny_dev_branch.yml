@@ -16,6 +16,10 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
+    - name: Build Python Package
+      run: |
+        python setup.py sdist --formats=zip
+
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v2
 
@@ -48,4 +52,4 @@ jobs:
         app-name: 'app-myapp-0331-2-prod-ae'
         slot-name: 'production'
         publish-profile: ${{ secrets.AzureAppService_PublishProfile_727f4d9639ff41808b3b232f18c0ab82 }}
-        images: 'index.docker.io/${{ secrets.AzureAppService_ContainerUsername_e5bd4c1613f641c7b57fd3d243db2f26 }}/azure_pipeline:${{ github.run_number }}'
+        images: 'mly219blueheart/azure_pipeline:${{ github.run_number }}'
