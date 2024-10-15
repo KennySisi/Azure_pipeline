@@ -3,6 +3,7 @@ from setuptools import setup, find_packages
 setup(
     name='azure_pipeline',
     version='1',
+    author='Kenny Mo',
     packages=find_packages(),
     package_data={
         '': ['requirements.txt'],
