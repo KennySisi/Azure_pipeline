@@ -6,7 +6,7 @@ name: Build and deploy container app to Azure Web App - app-myapp-0331-2-prod-ae
 on:
   push:
     branches:
-      - master
+      - kenny_dev
   workflow_dispatch:
 
 jobs:
