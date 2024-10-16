@@ -5,8 +5,17 @@ FROM tiangolo/uvicorn-gunicorn:python3.9
 # 设置工作目录
 WORKDIR /app
 
-# 复制你的 Python 安装包到工作目录
-COPY dist/azure_pipeline-1.zip .
+COPY . . 
+
+# 安装Python依赖
+RUN pip install --upgrade pip
+RUN pip install -r requirements.txt
+
+# 生成Python包的ZIP文件
+RUN python setup.py sdist --formats=zip
+
+# 复制生成的ZIP文件到适当的位置
+RUN mv dist/azure_pipeline-1.zip .
 
 RUN unzip azure_pipeline-1.zip && \
     rm azure_pipeline-1.zip
