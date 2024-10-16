@@ -52,7 +52,7 @@ jobs:
       uses: docker/build-push-action@v3
       with:
         push: true
-        tags: index.docker.io/mly219blueheart/azure_pipeline:${{ github.sha }}
+        tags: index.docker.io/mly219blueheart/azure_pipeline:${{ github.run_number }}
         file: ./Dockerfile
 
   deploy:
@@ -70,4 +70,4 @@ jobs:
         app-name: 'app-myapp-0331-2-prod-ae'
         slot-name: 'production'
         publish-profile: ${{ secrets.AzureAppService_PublishProfile_47833dbd88994494a982a4b9dc526e62 }}
-        images: 'index.docker.io/mly219blueheart/azure_pipeline:${{ github.sha }}'
+        images: 'index.docker.io/mly219blueheart/azure_pipeline:${{ github.run_number }}'
