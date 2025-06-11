@@ -20,6 +20,10 @@ stages:
     pool:
       vmImage: ubuntu-latest
     steps:
+    - script: |
+            python setup.py sdist --formats=zip
+      displayName: 'Generate python package zip'
+      
     - task: Docker@2
       displayName: Build an image
       inputs:
